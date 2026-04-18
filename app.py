@@ -2,10 +2,26 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from PIL import Image
-import os
 
 st.set_page_config(page_title="AHP Calculator", layout="wide")
+
+# -----------------------------
+# LIGHT GREY UI STYLE
+# -----------------------------
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-color: #f2f2f2;
+        color: #111;
+    }
+    .block-container {
+        padding-top: 2rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # -----------------------------
 # HEADER
@@ -61,17 +77,31 @@ st.sidebar.markdown("### RI Table")
 st.sidebar.dataframe(pd.DataFrame(list(RI_dict.items()), columns=["n", "RI"]))
 
 # -----------------------------
-# SAATY SCALE IMAGE (SAFE LOAD)
+# SAATY SCALE TABLE (NO IMAGE)
 # -----------------------------
-st.markdown("### Saaty Scale")
+st.markdown("### Saaty Scale Reference")
 
-image_path = "saaty_scale.png"
+saaty_df = pd.DataFrame({
+    "Scale": [1, 3, 5, 7, 9, "2,4,6,8"],
+    "Meaning": [
+        "Equal importance",
+        "Moderate importance",
+        "Strong importance",
+        "Very strong importance",
+        "Extreme importance",
+        "Intermediate values"
+    ],
+    "Explanation": [
+        "Two criteria contribute equally",
+        "Slightly favor one over another",
+        "Strongly favor one",
+        "Dominance clearly evident",
+        "Highest level of preference",
+        "Between adjacent judgments"
+    ]
+})
 
-if os.path.exists(image_path):
-    image = Image.open(image_path)
-    st.image(image, use_container_width=True)
-else:
-    st.info("Saaty scale image not found. Add 'saaty_scale.png' in app folder.")
+st.dataframe(saaty_df, use_container_width=True)
 
 # -----------------------------
 # MATRIX INPUT
