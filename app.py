@@ -36,8 +36,6 @@ Use short names. Saaty scale (1–9). CR < 0.1 acceptable.\
 </div></div>", unsafe_allow_html=True)
 
 # ---------------- SIDEBAR ----------------
-st.sidebar.header("Input")
-
 criteria_input = st.sidebar.text_area(
     "Criteria",
     "Elev, Dist, Slope, TWI, Rainf, D_D, Soil, Geo"
@@ -46,7 +44,7 @@ criteria_input = st.sidebar.text_area(
 criteria = [c.strip() for c in criteria_input.split(",") if c.strip()]
 n = len(criteria)
 
-# -------- RESTORED THEORY --------
+# -------- THEORY --------
 st.sidebar.markdown("### AHP Formulas")
 st.sidebar.latex(r"\lambda_{max} = \frac{1}{n} \sum \frac{(A \cdot W)_i}{W_i}")
 st.sidebar.latex(r"CI = \frac{\lambda_{max} - n}{n - 1}")
@@ -92,35 +90,44 @@ st.markdown("</div>", unsafe_allow_html=True)
 # ---------------- RUN ----------------
 if st.button("Run AHP"):
 
-    # -------- TABLE 1 --------
+    # -------- TABLE 1 (FIXED WITH TOTAL ROW + COLUMN) --------
     st.markdown("<div class='card'><div class='section-title'>Table 1: Pairwise Matrix</div>", unsafe_allow_html=True)
+
     df1 = pd.DataFrame(matrix, index=criteria, columns=criteria)
-    st.dataframe(df1)
+    df1["Row Sum"] = df1.sum(axis=1)
+    df1.loc["TOTAL"] = df1.sum()
+
+    st.dataframe(df1, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # -------- NORMALIZATION --------
+    # -------- COLUMN SUM --------
     col_sum = matrix.sum(axis=0)
+
+    # -------- NORMALIZED MATRIX --------
     norm_matrix = matrix / col_sum
 
     # -------- TABLE 2 --------
     st.markdown("<div class='card'><div class='section-title'>Table 2: Normalized Matrix</div>", unsafe_allow_html=True)
+
     df2 = pd.DataFrame(norm_matrix, index=criteria, columns=criteria)
     df2.loc["TOTAL"] = df2.sum()
-    st.dataframe(df2)
+
+    st.dataframe(df2, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # -------- WEIGHTS --------
-    eigvals, eigvecs = np.linalg.eig(matrix)
-    weights = np.abs(eigvecs[:, np.argmax(eigvals.real)].real)
-    weights = weights / weights.sum()
+    # -------- WEIGHTS (COLUMN MEAN = EXACT LIKE EXCEL) --------
+    weights = norm_matrix.mean(axis=1)
 
-    # -------- TABLE 3 (CONSISTENCY MATRIX FIXED) --------
-    consistency_matrix = norm_matrix * weights  # COLUMN-wise multiply
+    # -------- TABLE 3 (CRITICAL FIX) --------
+    # ORIGINAL MATRIX × COLUMN WEIGHT
+    consistency_matrix = matrix * weights
 
-    st.markdown("<div class='card'><div class='section-title'>Table 3: Consistency Matrix</div>", unsafe_allow_html=True)
+    st.markdown("<div class='card'><div class='section-title'>Table 3: Consistency Matrix (A × W)</div>", unsafe_allow_html=True)
+
     df3 = pd.DataFrame(consistency_matrix, index=criteria, columns=criteria)
     df3.loc["TOTAL"] = df3.sum()
-    st.dataframe(df3)
+
+    st.dataframe(df3, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
     # -------- WEIGHTED SUM --------
@@ -136,6 +143,7 @@ if st.button("Run AHP"):
 
     # -------- TABLE 4 --------
     st.markdown("<div class='card'><div class='section-title'>Table 4: Consistency Summary</div>", unsafe_allow_html=True)
+
     df4 = pd.DataFrame({
         "Weighted Sum": weighted_sum,
         "Criteria Weight": weights,
@@ -143,7 +151,8 @@ if st.button("Run AHP"):
     }, index=criteria)
 
     df4.loc["TOTAL"] = df4.sum()
-    st.dataframe(df4)
+
+    st.dataframe(df4, use_container_width=True)
 
     st.write(f"CI = {CI:.6f}")
     st.write(f"RI = {RI}")
@@ -153,15 +162,18 @@ if st.button("Run AHP"):
 
     # -------- TABLE 5 --------
     st.markdown("<div class='card'><div class='section-title'>Table 5: GIS Weight</div>", unsafe_allow_html=True)
+
     st.dataframe(pd.DataFrame({
         "Criteria": criteria,
         "GIS Weight": np.round(weights,2)
-    }))
+    }), use_container_width=True)
+
     st.markdown("</div>", unsafe_allow_html=True)
 
     # -------- GRAPH --------
     fig, ax = plt.subplots()
     ax.bar(criteria, weights)
+    plt.xticks(rotation=45)
     st.pyplot(fig)
 
 # ---------------- FOOTER ----------------
