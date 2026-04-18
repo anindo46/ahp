@@ -38,6 +38,13 @@ st.markdown("""
     font-size: 14px;
     padding-top: 20px;
 }
+.note {
+    background-color: rgba(255,255,255,0.05);
+    padding: 12px;
+    border-left: 4px solid #4CAF50;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -71,7 +78,7 @@ st.sidebar.latex(r"CI = \frac{\lambda_{max} - n}{n - 1}")
 st.sidebar.latex(r"CR = \frac{CI}{RI}")
 
 # -----------------------------
-# RI VALUES (ONLY TABLE)
+# RI TABLE
 # -----------------------------
 RI_dict = {
     1: 0, 2: 0, 3: 0.58, 4: 0.90,
@@ -105,23 +112,20 @@ st.dataframe(saaty_df, use_container_width=True)
 st.markdown("</div>", unsafe_allow_html=True)
 
 # -----------------------------
-# PAIRWISE INPUT (FIXED GRID)
+# PAIRWISE INPUT (NO C1 C2)
 # -----------------------------
 st.markdown("<div class='card'>", unsafe_allow_html=True)
 st.markdown("<div class='section-title'>Pairwise Comparison</div>", unsafe_allow_html=True)
 
+# N.B.
+st.markdown("""
+<div class='note'>
+<b>N.B.</b> Please use short and clear variable names to avoid layout issues.  
+Examples: Elevation → <b>El</b>, Slope → <b>Sl</b>, Distance to river → <b>Dis</b>, Drainage Density → <b>DD</b>.
+</div>
+""", unsafe_allow_html=True)
+
 matrix = np.ones((n, n))
-
-# short labels (no shift)
-short_names = [f"C{i+1}" for i in range(n)]
-
-# mapping table
-mapping_df = pd.DataFrame({
-    "Code": short_names,
-    "Criteria": criteria
-})
-st.markdown("**Criteria Mapping:**")
-st.dataframe(mapping_df, use_container_width=True)
 
 for i in range(n):
     cols = st.columns(n)
@@ -130,13 +134,12 @@ for i in range(n):
             cols[j].markdown("—")
         elif j > i:
             val = cols[j].number_input(
-                f"{short_names[i]} vs {short_names[j]}",
+                f"{criteria[i]} vs {criteria[j]}",
                 min_value=0.11,
                 max_value=9.0,
                 value=1.0,
                 step=0.1,
-                key=f"{i}-{j}",
-                help=f"{criteria[i]} vs {criteria[j]}"
+                key=f"{i}-{j}"
             )
             matrix[i][j] = val
             matrix[j][i] = 1 / val
@@ -145,7 +148,7 @@ for i in range(n):
 
 df_matrix = pd.DataFrame(matrix, index=criteria, columns=criteria)
 
-# sums
+# add sums
 df_matrix["Row Sum"] = df_matrix.sum(axis=1)
 df_matrix.loc["Column Sum"] = df_matrix.sum(axis=0)
 
@@ -173,11 +176,9 @@ if st.button("Run AHP"):
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.markdown("<div class='section-title'>Results</div>", unsafe_allow_html=True)
 
-    # normalized matrix
     st.markdown("#### Normalized Matrix")
     st.dataframe(pd.DataFrame(norm_matrix, index=criteria, columns=criteria), use_container_width=True)
 
-    # detailed table
     st.markdown("#### Detailed Table")
     table = pd.DataFrame(norm_matrix, index=criteria, columns=criteria)
     table["Weighted Sum"] = weighted_sum
@@ -186,7 +187,6 @@ if st.button("Run AHP"):
 
     st.dataframe(table, use_container_width=True)
 
-    # consistency
     st.markdown("#### Consistency")
     st.write(f"λmax = {lambda_max:.4f} | CI = {CI:.4f} | CR = {CR:.4f}")
 
@@ -195,14 +195,12 @@ if st.button("Run AHP"):
     else:
         st.error("Not Consistent")
 
-    # weights %
     st.markdown("#### Weights (%)")
     st.dataframe(pd.DataFrame({
         "Criteria": criteria,
         "Weight (%)": np.round(weights * 100, 2)
     }), use_container_width=True)
 
-    # plots
     st.markdown("#### Weight Distribution")
     fig, ax = plt.subplots()
     ax.bar(criteria, weights)
