@@ -2,14 +2,35 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from PIL import Image
 
-st.set_page_config(page_title="AHP Professional Tool", layout="wide")
-
-st.title("Analytic Hierarchy Process (AHP) Tool")
-st.markdown("### Flood Hazard Mapping – Paper Ready Calculator")
+st.set_page_config(page_title="Flood Hazard AHP Tool", layout="wide")
 
 # -----------------------------
-# SIDEBAR INPUT
+# HEADER + LOGO
+# -----------------------------
+st.markdown(
+    """
+    <div style='text-align: center;'>
+        <h1>Best for Flood Hazard Mapping</h1>
+        <p><b>AHP-Based Multi-Criteria Decision Tool</b></p>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+# Simple logo (text-based)
+st.markdown(
+    """
+    <div style='text-align:center; font-size:18px; padding:5px;'>
+    🌊 <b>AHP Flood Tool</b> 🌍
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+# -----------------------------
+# SIDEBAR
 # -----------------------------
 st.sidebar.header("Input")
 
@@ -24,13 +45,35 @@ n = len(criteria)
 st.sidebar.write(f"Total Criteria: {n}")
 
 # -----------------------------
-# FORMULAS (SIDE PANEL)
+# FORMULAS
 # -----------------------------
-st.sidebar.markdown("### Formulas Used")
+st.sidebar.markdown("### Formulas")
 
 st.sidebar.latex(r"\lambda_{max} = \frac{1}{n} \sum \frac{(A \cdot W)_i}{W_i}")
 st.sidebar.latex(r"CI = \frac{\lambda_{max} - n}{n - 1}")
 st.sidebar.latex(r"CR = \frac{CI}{RI}")
+
+# -----------------------------
+# RI TABLE
+# -----------------------------
+RI_dict = {
+    1: 0, 2: 0, 3: 0.58, 4: 0.90,
+    5: 1.12, 6: 1.24, 7: 1.32,
+    8: 1.41, 9: 1.45, 10: 1.49
+}
+
+st.sidebar.markdown("### Random Index (RI)")
+
+ri_df = pd.DataFrame(list(RI_dict.items()), columns=["n", "RI"])
+st.sidebar.dataframe(ri_df)
+
+# -----------------------------
+# SCALE IMAGE
+# -----------------------------
+st.markdown("### Saaty Scale Reference")
+
+image = Image.open("/mnt/data/image.png")
+st.image(image, use_container_width=True)
 
 # -----------------------------
 # MATRIX INPUT
@@ -60,85 +103,44 @@ st.markdown("### Pairwise Matrix")
 st.dataframe(df_matrix, use_container_width=True)
 
 # -----------------------------
-# CALCULATE BUTTON
+# CALCULATION
 # -----------------------------
 if st.button("Run AHP Analysis"):
 
-    # -----------------------------
-    # NORMALIZATION
-    # -----------------------------
     col_sum = matrix.sum(axis=0)
     norm_matrix = matrix / col_sum
-
-    df_norm = pd.DataFrame(norm_matrix, index=criteria, columns=criteria)
-
-    # -----------------------------
-    # WEIGHTS
-    # -----------------------------
     weights = norm_matrix.mean(axis=1)
 
-    df_weights = pd.DataFrame({
-        "Criteria": criteria,
-        "Weight": weights
-    })
-
-    # -----------------------------
-    # WEIGHTED SUM
-    # -----------------------------
     weighted_sum = np.dot(matrix, weights)
-
-    df_ws = pd.DataFrame({
-        "Criteria": criteria,
-        "Weighted Sum": weighted_sum
-    })
-
-    # -----------------------------
-    # LAMBDA MAX
-    # -----------------------------
     lambda_vals = weighted_sum / weights
     lambda_max = np.mean(lambda_vals)
 
-    # -----------------------------
-    # CI & CR
-    # -----------------------------
     CI = (lambda_max - n) / (n - 1)
-
-    RI_dict = {
-        1: 0, 2: 0, 3: 0.58, 4: 0.90,
-        5: 1.12, 6: 1.24, 7: 1.32,
-        8: 1.41, 9: 1.45, 10: 1.49
-    }
-
     RI = RI_dict.get(n, 1.49)
     CR = CI / RI if RI != 0 else 0
 
     # -----------------------------
-    # OUTPUT SECTION
+    # TABLES
     # -----------------------------
-    st.success("AHP Calculation Completed")
+    st.success("Calculation Complete")
 
-    # Normalized matrix
     st.markdown("### Normalized Matrix")
-    st.dataframe(df_norm, use_container_width=True)
+    st.dataframe(pd.DataFrame(norm_matrix, index=criteria, columns=criteria), use_container_width=True)
 
-    # Weights
     st.markdown("### Weights")
+    df_weights = pd.DataFrame({"Criteria": criteria, "Weight": weights})
     st.dataframe(df_weights, use_container_width=True)
 
-    # Weighted sum
     st.markdown("### Weighted Sum")
-    st.dataframe(df_ws, use_container_width=True)
+    st.dataframe(pd.DataFrame({"Criteria": criteria, "Weighted Sum": weighted_sum}), use_container_width=True)
 
-    # Lambda table
-    st.markdown("### λ (Lambda Values)")
-    df_lambda = pd.DataFrame({
-        "Criteria": criteria,
-        "Lambda_i": lambda_vals
-    })
-    st.dataframe(df_lambda, use_container_width=True)
+    st.markdown("### Lambda Values")
+    st.dataframe(pd.DataFrame({"Criteria": criteria, "Lambda": lambda_vals}), use_container_width=True)
 
-    # Final consistency
-    st.markdown("### Consistency Results")
+    # -----------------------------
+    # CONSISTENCY
+    # -----------------------------
+    st.markdown("### Consistency Check")
     st.write(f"λmax = {lambda_max:.4f}")
     st.write(f"CI = {CI:.4f}")
     st.write(f"RI = {RI}")
@@ -148,6 +150,19 @@ if st.button("Run AHP Analysis"):
         st.success("Consistent (CR < 0.1)")
     else:
         st.error("Not Consistent (CR > 0.1)")
+
+    # -----------------------------
+    # GIS WEIGHTS
+    # -----------------------------
+    st.markdown("### GIS Usable Weights (%)")
+
+    gis_weights = weights / weights.sum() * 100
+    df_gis = pd.DataFrame({
+        "Criteria": criteria,
+        "Weight (%)": np.round(gis_weights, 2)
+    })
+
+    st.dataframe(df_gis, use_container_width=True)
 
     # -----------------------------
     # GRAPH
@@ -163,13 +178,18 @@ if st.button("Run AHP Analysis"):
     # -----------------------------
     # DOWNLOAD
     # -----------------------------
-    st.markdown("### Export")
+    csv = df_gis.to_csv(index=False).encode("utf-8")
+    st.download_button("Download GIS Weights", csv, "gis_weights.csv", "text/csv")
 
-    csv = df_weights.to_csv(index=False).encode("utf-8")
-
-    st.download_button(
-        "Download Weights CSV",
-        csv,
-        "AHP_weights.csv",
-        "text/csv"
-    )
+# -----------------------------
+# FOOTER (CREDIT)
+# -----------------------------
+st.markdown("---")
+st.markdown(
+    """
+    **Developed by:**  
+    Anindo Paul Sourav  
+    Geology and Mining, University of Barishal  
+    Email: anindo.glm@gmail.com
+    """
+)
