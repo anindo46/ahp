@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="AHP Calculator", layout="wide")
 
 # -----------------------------
-# CLEAN PREMIUM STYLE
+# STYLE
 # -----------------------------
 st.markdown("""
 <style>
@@ -71,7 +71,7 @@ st.sidebar.latex(r"CI = \frac{\lambda_{max} - n}{n - 1}")
 st.sidebar.latex(r"CR = \frac{CI}{RI}")
 
 # -----------------------------
-# RI TABLE + CHART
+# RI VALUES (ONLY TABLE)
 # -----------------------------
 RI_dict = {
     1: 0, 2: 0, 3: 0.58, 4: 0.90,
@@ -79,14 +79,8 @@ RI_dict = {
     8: 1.41, 9: 1.45, 10: 1.49
 }
 
-ri_df = pd.DataFrame(list(RI_dict.items()), columns=["n", "RI"])
 st.sidebar.markdown("### RI Table")
-st.sidebar.dataframe(ri_df)
-
-fig_ri, ax_ri = plt.subplots()
-ax_ri.plot(ri_df["n"], ri_df["RI"], marker='o')
-ax_ri.set_title("RI Trend")
-st.sidebar.pyplot(fig_ri)
+st.sidebar.dataframe(pd.DataFrame(list(RI_dict.items()), columns=["n", "RI"]))
 
 # -----------------------------
 # SAATY SCALE
@@ -111,12 +105,23 @@ st.dataframe(saaty_df, use_container_width=True)
 st.markdown("</div>", unsafe_allow_html=True)
 
 # -----------------------------
-# PAIRWISE INPUT GRID (FIXED)
+# PAIRWISE INPUT (FIXED GRID)
 # -----------------------------
 st.markdown("<div class='card'>", unsafe_allow_html=True)
 st.markdown("<div class='section-title'>Pairwise Comparison</div>", unsafe_allow_html=True)
 
 matrix = np.ones((n, n))
+
+# short labels (no shift)
+short_names = [f"C{i+1}" for i in range(n)]
+
+# mapping table
+mapping_df = pd.DataFrame({
+    "Code": short_names,
+    "Criteria": criteria
+})
+st.markdown("**Criteria Mapping:**")
+st.dataframe(mapping_df, use_container_width=True)
 
 for i in range(n):
     cols = st.columns(n)
@@ -125,12 +130,13 @@ for i in range(n):
             cols[j].markdown("—")
         elif j > i:
             val = cols[j].number_input(
-                f"{criteria[i]} vs {criteria[j]}",
+                f"{short_names[i]} vs {short_names[j]}",
                 min_value=0.11,
                 max_value=9.0,
                 value=1.0,
                 step=0.1,
-                key=f"{i}-{j}"
+                key=f"{i}-{j}",
+                help=f"{criteria[i]} vs {criteria[j]}"
             )
             matrix[i][j] = val
             matrix[j][i] = 1 / val
@@ -139,12 +145,12 @@ for i in range(n):
 
 df_matrix = pd.DataFrame(matrix, index=criteria, columns=criteria)
 
-# add sums
+# sums
 df_matrix["Row Sum"] = df_matrix.sum(axis=1)
-col_sum_row = df_matrix.sum(axis=0)
-df_matrix.loc["Column Sum"] = col_sum_row
+df_matrix.loc["Column Sum"] = df_matrix.sum(axis=0)
 
 st.dataframe(df_matrix, use_container_width=True)
+
 st.markdown("</div>", unsafe_allow_html=True)
 
 # -----------------------------
@@ -167,13 +173,12 @@ if st.button("Run AHP"):
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.markdown("<div class='section-title'>Results</div>", unsafe_allow_html=True)
 
-    # normalized
+    # normalized matrix
     st.markdown("#### Normalized Matrix")
     st.dataframe(pd.DataFrame(norm_matrix, index=criteria, columns=criteria), use_container_width=True)
 
     # detailed table
     st.markdown("#### Detailed Table")
-
     table = pd.DataFrame(norm_matrix, index=criteria, columns=criteria)
     table["Weighted Sum"] = weighted_sum
     table["Weight"] = weights
@@ -203,19 +208,6 @@ if st.button("Run AHP"):
     ax.bar(criteria, weights)
     plt.xticks(rotation=45)
     st.pyplot(fig)
-
-    st.markdown("#### Lambda Distribution")
-    fig2, ax2 = plt.subplots()
-    ax2.plot(lambda_vals, marker='o')
-    ax2.axhline(lambda_max, linestyle='--')
-    st.pyplot(fig2)
-
-    # interpretation
-    st.markdown("#### Interpretation")
-    if CR < 0.1:
-        st.success("Judgement is consistent and reliable.")
-    else:
-        st.error("Judgement inconsistent. Revise comparisons.")
 
     st.markdown("</div>", unsafe_allow_html=True)
 
