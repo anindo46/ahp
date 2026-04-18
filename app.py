@@ -158,8 +158,19 @@ if st.button("Run AHP"):
 
     col_sum = matrix.sum(axis=0)
     norm_matrix = matrix / col_sum
-    weights = norm_matrix.mean(axis=1)
 
+    # -----------------------------
+    # ✅ Eigenvector Weight (Correct)
+    # -----------------------------
+    eigvals, eigvecs = np.linalg.eig(matrix)
+    max_index = np.argmax(eigvals.real)
+    weights = eigvecs[:, max_index].real
+    weights = np.abs(weights)
+    weights = weights / weights.sum()
+
+    # -----------------------------
+    # Core calculations
+    # -----------------------------
     weighted_sum = np.dot(matrix, weights)
     lambda_vals = weighted_sum / weights
     lambda_max = np.mean(lambda_vals)
@@ -169,7 +180,7 @@ if st.button("Run AHP"):
     CR = CI / RI if RI != 0 else 0
 
     # -----------------------------
-    # TABLE 3 (Normalized)
+    # TABLE 3
     # -----------------------------
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.markdown("<div class='section-title'>Analytical Results Table (Normalized pairwise comparison matrix)</div>", unsafe_allow_html=True)
@@ -194,7 +205,6 @@ if st.button("Run AHP"):
         "Weight (%)": np.round(weights * 100, 2)
     }), use_container_width=True)
 
-    st.markdown("#### Weight Distribution")
     fig, ax = plt.subplots()
     ax.bar(criteria, weights)
     plt.xticks(rotation=45)
