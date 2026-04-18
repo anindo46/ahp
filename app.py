@@ -169,7 +169,7 @@ if st.button("Run AHP"):
     CR = CI / RI if RI != 0 else 0
 
     st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>Analytical Results Table</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>Analytical Results Table (Normalized pairwise comparison matrix)</div>", unsafe_allow_html=True)
 
     norm_df = pd.DataFrame(norm_matrix, index=criteria, columns=criteria)
 
