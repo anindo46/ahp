@@ -6,58 +6,56 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="AHP Calculator", layout="wide")
 
 # -----------------------------
-# PREMIUM CSS
+# PREMIUM CLEAN CSS (SAFE)
 # -----------------------------
 st.markdown("""
 <style>
-/* Background */
-.stApp {
-    background-color: #eef1f5;
+
+/* Cards */
+.card {
+    background-color: rgba(255,255,255,0.04);
+    padding: 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 20px;
 }
 
 /* Header */
-.main-title {
+.title {
     text-align: center;
-    font-size: 42px;
+    font-size: 38px;
     font-weight: 700;
     margin-bottom: 5px;
 }
 
 .subtitle {
     text-align: center;
-    color: #6c757d;
-    margin-bottom: 30px;
+    color: #9aa0a6;
+    margin-bottom: 25px;
 }
 
-/* Cards */
-.card {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    margin-bottom: 20px;
-}
-
-/* Table style */
-.dataframe {
-    border-radius: 10px !important;
-    overflow: hidden;
+/* Section title */
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
 }
 
 /* Footer */
 .footer {
     text-align: center;
-    color: #6c757d;
+    color: #9aa0a6;
     font-size: 14px;
-    padding: 20px 0;
+    padding-top: 20px;
 }
+
 </style>
 """, unsafe_allow_html=True)
 
 # -----------------------------
 # HEADER
 # -----------------------------
-st.markdown("<div class='main-title'>AHP Calculator</div>", unsafe_allow_html=True)
+st.markdown("<div class='title'>AHP Calculator</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Analytic Hierarchy Process Tool</div>", unsafe_allow_html=True)
 
 # -----------------------------
@@ -96,10 +94,10 @@ st.sidebar.markdown("### RI Table")
 st.sidebar.dataframe(pd.DataFrame(list(RI_dict.items()), columns=["n", "RI"]))
 
 # -----------------------------
-# SAATY SCALE CARD
+# SAATY SCALE (CARD)
 # -----------------------------
 st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.markdown("### Saaty Scale")
+st.markdown("<div class='section-title'>Saaty Scale</div>", unsafe_allow_html=True)
 
 saaty_df = pd.DataFrame({
     "Scale": [1, 3, 5, 7, 9, "2,4,6,8"],
@@ -125,10 +123,10 @@ st.dataframe(saaty_df, use_container_width=True)
 st.markdown("</div>", unsafe_allow_html=True)
 
 # -----------------------------
-# MATRIX INPUT CARD
+# MATRIX INPUT (CARD)
 # -----------------------------
 st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.markdown("### Pairwise Comparison")
+st.markdown("<div class='section-title'>Pairwise Comparison</div>", unsafe_allow_html=True)
 
 matrix = np.ones((n, n))
 cols = st.columns(n)
@@ -169,21 +167,15 @@ if st.button("Run AHP"):
     RI = RI_dict.get(n, 1.49)
     CR = CI / RI if RI != 0 else 0
 
-    # -----------------------------
-    # RESULTS CARD
-    # -----------------------------
     st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("### Results")
+    st.markdown("<div class='section-title'>Results</div>", unsafe_allow_html=True)
 
-    st.markdown("#### Normalized Matrix")
     st.dataframe(pd.DataFrame(norm_matrix, index=criteria, columns=criteria), use_container_width=True)
 
-    st.markdown("#### Weights")
     df_weights = pd.DataFrame({"Criteria": criteria, "Weight": weights})
     st.dataframe(df_weights, use_container_width=True)
 
-    st.markdown("#### Consistency")
-    st.write(f"λmax = {lambda_max:.4f} | CI = {CI:.4f} | CR = {CR:.4f}")
+    st.markdown(f"**λmax:** {lambda_max:.4f} | **CI:** {CI:.4f} | **CR:** {CR:.4f}")
 
     if CR < 0.1:
         st.success("Consistent")
@@ -192,13 +184,10 @@ if st.button("Run AHP"):
 
     # GIS weights
     gis_weights = weights / weights.sum() * 100
-    df_gis = pd.DataFrame({
+    st.dataframe(pd.DataFrame({
         "Criteria": criteria,
         "Weight (%)": np.round(gis_weights, 2)
-    })
-
-    st.markdown("#### Weights (%)")
-    st.dataframe(df_gis, use_container_width=True)
+    }), use_container_width=True)
 
     # Graph
     fig, ax = plt.subplots()
