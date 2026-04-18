@@ -11,21 +11,16 @@ st.set_page_config(page_title="AHP Calculator", layout="wide")
 st.markdown("""
 <style>
 .card {
-    background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    background: rgba(255,255,255,0.04);
     padding: 18px;
-    border-radius: 14px;
+    border-radius: 12px;
     border: 1px solid rgba(255,255,255,0.08);
     margin-bottom: 20px;
 }
 .title {
     text-align: center;
     font-size: 36px;
-    font-weight: 800;
-}
-.subtitle {
-    text-align: center;
-    color: #9aa0a6;
-    margin-bottom: 20px;
+    font-weight: 700;
 }
 .section-title {
     font-size: 20px;
@@ -34,16 +29,15 @@ st.markdown("""
 }
 .notice {
     background-color: rgba(255,255,255,0.05);
-    padding: 14px;
-    border-left: 5px solid #00c853;
-    border-radius: 8px;
-    margin-bottom: 15px;
+    padding: 12px;
+    border-left: 4px solid #4CAF50;
+    border-radius: 6px;
 }
 .footer {
     text-align: center;
     padding: 30px;
-    border-top: 1px solid rgba(255,255,255,0.1);
     margin-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.1);
 }
 </style>
 """, unsafe_allow_html=True)
@@ -52,31 +46,25 @@ st.markdown("""
 # HEADER
 # -----------------------------
 st.markdown("<div class='title'>AHP Calculator</div>", unsafe_allow_html=True)
-st.markdown("<div class='subtitle'>Analytic Hierarchy Process Tool</div>", unsafe_allow_html=True)
 
 # -----------------------------
-# NOTICE BOARD
+# NOTICE
 # -----------------------------
 st.markdown("<div class='card'>", unsafe_allow_html=True)
 st.markdown("""
 <div class='notice'>
-<b>Notice:</b><br>
-• This tool calculates weights using AHP (Analytic Hierarchy Process)<br>
-• Input criteria using short names (El, Sl, Dis, DD) for better layout<br>
-• Values follow Saaty Scale (1–9)<br>
-• Output includes normalized matrix, weights, and consistency check (CI, CR)<br>
-• CR &lt; 0.1 → Acceptable consistency
+Use short names (Elev, Dist, Slp, etc).<br>
+Saaty scale (1–9).<br>
+CR &lt; 0.1 = acceptable.<br>
 </div>
 """, unsafe_allow_html=True)
 st.markdown("</div>", unsafe_allow_html=True)
 
 # -----------------------------
-# SIDEBAR INPUT
+# INPUT
 # -----------------------------
-st.sidebar.header("Input")
-
 criteria_input = st.sidebar.text_area(
-    "Criteria (comma separated)",
+    "Criteria",
     "Elev, Dist, Slope, TWI, Rainf, D_D, Soil, Geo"
 )
 
@@ -84,21 +72,12 @@ criteria = [c.strip() for c in criteria_input.split(",") if c.strip()]
 n = len(criteria)
 
 # -----------------------------
-# RI TABLE
+# PAIRWISE MATRIX INPUT
 # -----------------------------
-RI_dict = {
-    1: 0, 2: 0, 3: 0.58, 4: 0.90,
-    5: 1.12, 6: 1.24, 7: 1.32,
-    8: 1.41, 9: 1.45, 10: 1.49
-}
-
-# -----------------------------
-# PAIRWISE MATRIX
-# -----------------------------
-st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.markdown("<div class='section-title'>Pairwise Comparison Matrix</div>", unsafe_allow_html=True)
-
 matrix = np.ones((n, n))
+
+st.markdown("<div class='card'>", unsafe_allow_html=True)
+st.markdown("<div class='section-title'>Input Pairwise Matrix</div>", unsafe_allow_html=True)
 
 for i in range(n):
     cols = st.columns(n)
@@ -107,7 +86,7 @@ for i in range(n):
             cols[j].markdown("—")
         elif j > i:
             val = cols[j].number_input(
-                f"{criteria[i]} vs {criteria[j]}",
+                f"{i}-{j}",
                 min_value=0.11,
                 max_value=9.0,
                 value=1.0,
@@ -122,13 +101,36 @@ for i in range(n):
 st.markdown("</div>", unsafe_allow_html=True)
 
 # -----------------------------
-# RUN AHP
+# RUN
 # -----------------------------
 if st.button("Run AHP"):
 
+    # -------- TABLE 1 --------
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>Table 1: Pairwise Comparison Matrix</div>", unsafe_allow_html=True)
+
+    df1 = pd.DataFrame(matrix, index=criteria, columns=criteria)
+    df1["Row Sum"] = df1.sum(axis=1)
+    df1.loc["TOTAL"] = df1.sum()
+
+    st.dataframe(df1, use_container_width=True)
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    # -------- NORMALIZATION --------
     col_sum = matrix.sum(axis=0)
     norm_matrix = matrix / col_sum
 
+    # -------- TABLE 2 --------
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>Table 2: Normalized Pairwise Matrix</div>", unsafe_allow_html=True)
+
+    df2 = pd.DataFrame(norm_matrix, index=criteria, columns=criteria)
+    df2.loc["TOTAL"] = df2.sum()
+
+    st.dataframe(df2, use_container_width=True)
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    # -------- WEIGHTS --------
     eigvals, eigvecs = np.linalg.eig(matrix)
     max_index = np.argmax(eigvals.real)
     weights = np.abs(eigvecs[:, max_index].real)
@@ -139,93 +141,71 @@ if st.button("Run AHP"):
     lambda_max = np.mean(lambda_vals)
 
     CI = (lambda_max - n) / (n - 1)
-    RI = RI_dict.get(n, 1.49)
-    CR = CI / RI if RI != 0 else 0
+    RI_dict = {8: 1.41}
+    RI = RI_dict.get(n, 1.41)
+    CR = CI / RI
 
-    # -----------------------------
-    # TABLE 1
-    # -----------------------------
+    # -------- TABLE 3 (CONSISTENCY MATRIX FULL GRID) --------
     st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>Table 1: Normalized Pairwise Matrix</div>", unsafe_allow_html=True)
-
-    table1 = pd.DataFrame(norm_matrix, index=criteria, columns=criteria)
-    table1["Weighted Sum"] = weighted_sum
-    table1["Weight"] = weights
-
-    st.dataframe(table1, use_container_width=True)
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    # -----------------------------
-    # TABLE 2
-    # -----------------------------
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>Table 2: Weighted Matrix</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>Table 3: Consistency Matrix</div>", unsafe_allow_html=True)
 
     weighted_matrix = matrix * weights
-    table2 = pd.DataFrame(weighted_matrix, index=criteria, columns=criteria)
-    table2["Weighted Sum"] = weighted_sum
+    df3 = pd.DataFrame(weighted_matrix, index=criteria, columns=criteria)
+    df3.loc["TOTAL"] = df3.sum()
 
-    st.dataframe(table2, use_container_width=True)
+    st.dataframe(df3, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # -----------------------------
-    # TABLE 3 (CI CALCULATION)
-    # -----------------------------
+    # -------- TABLE 4 (CONSISTENCY SUMMARY) --------
     st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>Table 3: Consistency Index Calculation</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>Table 4: Consistency Summary</div>", unsafe_allow_html=True)
 
-    ci_table = pd.DataFrame({
-        "Criteria": criteria,
+    df4 = pd.DataFrame({
+        "Weighted Sum": weighted_sum,
+        "Criteria Weight": weights,
         "WSV/W": lambda_vals
-    })
+    }, index=criteria)
 
-    st.dataframe(ci_table, use_container_width=True)
+    df4.loc["TOTAL"] = df4.sum()
+
+    st.dataframe(df4, use_container_width=True)
+
+    st.write(f"CI = {CI:.6f}")
+    st.write(f"RI = {RI}")
+    st.write(f"CR = {CR:.6f}")
+
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # -----------------------------
-    # TABLE 4 (FINAL RESULTS)
-    # -----------------------------
+    # -------- TABLE 5 (GIS WEIGHT) --------
     st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>Table 4: Final Consistency Results</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>Table 5: GIS Usable Weight</div>", unsafe_allow_html=True)
 
-    final_df = pd.DataFrame({
-        "λmax": [lambda_max],
-        "CI": [CI],
-        "RI": [RI],
-        "CR": [CR]
+    gis_weights = np.round(weights, 2)
+
+    df5 = pd.DataFrame({
+        "Criteria": criteria,
+        "GIS Weight": gis_weights
     })
 
-    st.dataframe(final_df, use_container_width=True)
+    st.dataframe(df5, use_container_width=True)
+
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # -----------------------------
-    # CHARTS
-    # -----------------------------
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>Weight Visualization</div>", unsafe_allow_html=True)
-
+    # -------- GRAPH --------
     fig, ax = plt.subplots()
     ax.bar(criteria, weights)
     plt.xticks(rotation=45)
     st.pyplot(fig)
 
-    fig2, ax2 = plt.subplots()
-    ax2.pie(weights, labels=criteria, autopct='%1.1f%%')
-    st.pyplot(fig2)
-
-    st.markdown("</div>", unsafe_allow_html=True)
-
 # -----------------------------
-# PREMIUM FOOTER
+# FOOTER
 # -----------------------------
 st.markdown("<div class='footer'>", unsafe_allow_html=True)
 st.markdown("""
-<b>Developed by Anindo Paul Sourav</b><br>
-Geology & Mining, University of Barishal<br><br>
+<b>Anindo Paul Sourav</b><br>
+Free for all users<br><br>
 
-🔗 LinkedIn: https://www.linkedin.com/in/anindo046/ <br>
-🌐 Portfolio: https://anindo46.github.io/portfolio/ <br><br>
-
-<b>Free for all users</b>
+🔗 https://www.linkedin.com/in/anindo046/ <br>
+🌐 https://anindo46.github.io/portfolio/
 """, unsafe_allow_html=True)
 st.markdown("</div>", unsafe_allow_html=True)
