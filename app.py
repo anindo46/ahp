@@ -243,7 +243,7 @@ if st.button("▶ Run AHP Analysis", use_container_width=True):
 
     # ── TABLE 3: Consistency Matrix ──
     # Each cell CM[i][j] = original_matrix[i][j] × W[j]  (multiply each column by its weight)
-    consistency_matrix = matrix * weights.values[np.newaxis, :]  # broadcast: col j × W[j]
+    consistency_matrix = matrix * weights[np.newaxis, :]  # broadcast: col j × W[j]
 
     st.markdown("<div class='card'><div class='section-title'>Table 3 · Consistency Matrix</div>", unsafe_allow_html=True)
     df3 = pd.DataFrame(consistency_matrix, index=criteria, columns=criteria).round(4)
