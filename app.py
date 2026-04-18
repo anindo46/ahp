@@ -168,6 +168,9 @@ if st.button("Run AHP"):
     RI = RI_dict.get(n, 1.49)
     CR = CI / RI if RI != 0 else 0
 
+    # -----------------------------
+    # TABLE 3 (Normalized)
+    # -----------------------------
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.markdown("<div class='section-title'>Analytical Results Table (Normalized pairwise comparison matrix)</div>", unsafe_allow_html=True)
 
@@ -196,6 +199,28 @@ if st.button("Run AHP"):
     ax.bar(criteria, weights)
     plt.xticks(rotation=45)
     st.pyplot(fig)
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    # -----------------------------
+    # TABLE 4 (Consistency Table)
+    # -----------------------------
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>Consistency Calculation Table</div>", unsafe_allow_html=True)
+
+    element_matrix = matrix * weights
+    element_df = pd.DataFrame(element_matrix, index=criteria, columns=criteria)
+
+    element_df["Weighted Sum"] = weighted_sum
+    element_df["Criteria Weight"] = weights
+    element_df["WSV/W"] = lambda_vals
+
+    st.dataframe(element_df, use_container_width=True)
+
+    st.markdown("#### Consistency Results")
+    st.write(f"λmax = {lambda_max:.3f}")
+    st.write(f"CI = {CI:.3f}")
+    st.write(f"CR = {CR:.3f}")
 
     st.markdown("</div>", unsafe_allow_html=True)
 
