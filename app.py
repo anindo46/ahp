@@ -49,7 +49,7 @@ st.markdown("""
 st.markdown("<div class='title'>AHP Calculator</div>", unsafe_allow_html=True)
 
 # -----------------------------
-# NOTICE ONLY (MAIN PAGE)
+# NOTICE
 # -----------------------------
 st.markdown("<div class='card'>", unsafe_allow_html=True)
 st.markdown("""
@@ -76,14 +76,13 @@ criteria = [c.strip() for c in criteria_input.split(",") if c.strip()]
 n = len(criteria)
 
 # -----------------------------
-# SIDEBAR THEORY (MOVED HERE)
+# SIDEBAR THEORY
 # -----------------------------
 st.sidebar.markdown("### AHP Formulas")
 st.sidebar.latex(r"\lambda_{max} = \frac{1}{n} \sum \frac{(A \cdot W)_i}{W_i}")
 st.sidebar.latex(r"CI = \frac{\lambda_{max} - n}{n - 1}")
 st.sidebar.latex(r"CR = \frac{CI}{RI}")
 
-# RI TABLE
 RI_dict = {
     1: 0, 2: 0, 3: 0.58, 4: 0.90,
     5: 1.12, 6: 1.24, 7: 1.32,
@@ -93,7 +92,6 @@ RI_dict = {
 st.sidebar.markdown("### RI Table")
 st.sidebar.dataframe(pd.DataFrame(list(RI_dict.items()), columns=["n", "RI"]))
 
-# SAATY SCALE
 st.sidebar.markdown("### Saaty Scale")
 saaty_df = pd.DataFrame({
     "Value": [1, 3, 5, 7, 9, "2,4,6,8"],
@@ -110,7 +108,7 @@ saaty_df = pd.DataFrame({
 st.sidebar.dataframe(saaty_df)
 
 # -----------------------------
-# PAIRWISE MATRIX INPUT
+# PAIRWISE MATRIX INPUT (FIXED LABEL)
 # -----------------------------
 matrix = np.ones((n, n))
 
@@ -123,8 +121,9 @@ for i in range(n):
         if i == j:
             cols[j].markdown("—")
         elif j > i:
+            label = f"{criteria[i]} vs {criteria[j]}"
             val = cols[j].number_input(
-                f"{i}-{j}",
+                label,
                 min_value=0.11,
                 max_value=9.0,
                 value=1.0,
@@ -143,32 +142,20 @@ st.markdown("</div>", unsafe_allow_html=True)
 # -----------------------------
 if st.button("Run AHP"):
 
-    # TABLE 1
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>Table 1: Pairwise Comparison Matrix</div>", unsafe_allow_html=True)
-
     df1 = pd.DataFrame(matrix, index=criteria, columns=criteria)
     df1["Row Sum"] = df1.sum(axis=1)
     df1.loc["TOTAL"] = df1.sum()
 
     st.dataframe(df1, use_container_width=True)
-    st.markdown("</div>", unsafe_allow_html=True)
 
-    # NORMALIZATION
     col_sum = matrix.sum(axis=0)
     norm_matrix = matrix / col_sum
-
-    # TABLE 2
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>Table 2: Normalized Pairwise Matrix</div>", unsafe_allow_html=True)
 
     df2 = pd.DataFrame(norm_matrix, index=criteria, columns=criteria)
     df2.loc["TOTAL"] = df2.sum()
 
     st.dataframe(df2, use_container_width=True)
-    st.markdown("</div>", unsafe_allow_html=True)
 
-    # WEIGHTS
     eigvals, eigvecs = np.linalg.eig(matrix)
     max_index = np.argmax(eigvals.real)
     weights = np.abs(eigvecs[:, max_index].real)
@@ -182,20 +169,11 @@ if st.button("Run AHP"):
     RI = RI_dict.get(n, 1.41)
     CR = CI / RI
 
-    # TABLE 3
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>Table 3: Consistency Matrix</div>", unsafe_allow_html=True)
-
     weighted_matrix = matrix * weights
     df3 = pd.DataFrame(weighted_matrix, index=criteria, columns=criteria)
     df3.loc["TOTAL"] = df3.sum()
 
     st.dataframe(df3, use_container_width=True)
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    # TABLE 4
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>Table 4: Consistency Summary</div>", unsafe_allow_html=True)
 
     df4 = pd.DataFrame({
         "Weighted Sum": weighted_sum,
@@ -211,21 +189,13 @@ if st.button("Run AHP"):
     st.write(f"RI = {RI}")
     st.write(f"CR = {CR:.6f}")
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    # TABLE 5
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>Table 5: GIS Usable Weight</div>", unsafe_allow_html=True)
-
     df5 = pd.DataFrame({
         "Criteria": criteria,
         "GIS Weight": np.round(weights, 2)
     })
 
     st.dataframe(df5, use_container_width=True)
-    st.markdown("</div>", unsafe_allow_html=True)
 
-    # GRAPH
     fig, ax = plt.subplots()
     ax.bar(criteria, weights)
     plt.xticks(rotation=45)
