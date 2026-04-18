@@ -6,34 +6,50 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="AHP Calculator", layout="wide")
 
 # -----------------------------
-# PROFESSIONAL STYLE
+# PREMIUM CSS
 # -----------------------------
 st.markdown("""
 <style>
-body {
-    background-color: #f5f6fa;
-}
-.block-container {
-    padding-top: 2rem;
+/* Background */
+.stApp {
+    background-color: #eef1f5;
 }
 
-h1 {
-    font-size: 40px;
-    font-weight: 700;
+/* Header */
+.main-title {
     text-align: center;
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 5px;
 }
 
-h2 {
-    font-weight: 600;
-    margin-top: 30px;
+.subtitle {
+    text-align: center;
+    color: #6c757d;
+    margin-bottom: 30px;
 }
 
-.section-card {
-    background-color: white;
+/* Cards */
+.card {
+    background: white;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 2px 8px rgba(0,0,0,0.05);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
     margin-bottom: 20px;
+}
+
+/* Table style */
+.dataframe {
+    border-radius: 10px !important;
+    overflow: hidden;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    color: #6c757d;
+    font-size: 14px;
+    padding: 20px 0;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -41,11 +57,8 @@ h2 {
 # -----------------------------
 # HEADER
 # -----------------------------
-st.markdown("<h1>AHP Calculator</h1>", unsafe_allow_html=True)
-st.markdown(
-    "<p style='text-align:center; color:gray;'>Analytic Hierarchy Process (AHP) Tool</p>",
-    unsafe_allow_html=True
-)
+st.markdown("<div class='main-title'>AHP Calculator</div>", unsafe_allow_html=True)
+st.markdown("<div class='subtitle'>Analytic Hierarchy Process Tool</div>", unsafe_allow_html=True)
 
 # -----------------------------
 # SIDEBAR
@@ -83,9 +96,10 @@ st.sidebar.markdown("### RI Table")
 st.sidebar.dataframe(pd.DataFrame(list(RI_dict.items()), columns=["n", "RI"]))
 
 # -----------------------------
-# SAATY SCALE TABLE
+# SAATY SCALE CARD
 # -----------------------------
-st.markdown("## Saaty Scale")
+st.markdown("<div class='card'>", unsafe_allow_html=True)
+st.markdown("### Saaty Scale")
 
 saaty_df = pd.DataFrame({
     "Scale": [1, 3, 5, 7, 9, "2,4,6,8"],
@@ -108,11 +122,13 @@ saaty_df = pd.DataFrame({
 })
 
 st.dataframe(saaty_df, use_container_width=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
 # -----------------------------
-# MATRIX INPUT
+# MATRIX INPUT CARD
 # -----------------------------
-st.markdown("## Pairwise Comparison")
+st.markdown("<div class='card'>", unsafe_allow_html=True)
+st.markdown("### Pairwise Comparison")
 
 matrix = np.ones((n, n))
 cols = st.columns(n)
@@ -132,8 +148,9 @@ for i in range(n):
 
 df_matrix = pd.DataFrame(matrix, index=criteria, columns=criteria)
 
-st.markdown("### Pairwise Matrix")
+st.markdown("#### Pairwise Matrix")
 st.dataframe(df_matrix, use_container_width=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
 # -----------------------------
 # CALCULATION
@@ -152,42 +169,35 @@ if st.button("Run AHP"):
     RI = RI_dict.get(n, 1.49)
     CR = CI / RI if RI != 0 else 0
 
-    st.success("Calculation Complete")
+    # -----------------------------
+    # RESULTS CARD
+    # -----------------------------
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    st.markdown("### Results")
 
-    st.markdown("## Results")
-
-    st.markdown("### Normalized Matrix")
+    st.markdown("#### Normalized Matrix")
     st.dataframe(pd.DataFrame(norm_matrix, index=criteria, columns=criteria), use_container_width=True)
 
-    st.markdown("### Weights")
+    st.markdown("#### Weights")
     df_weights = pd.DataFrame({"Criteria": criteria, "Weight": weights})
     st.dataframe(df_weights, use_container_width=True)
 
-    st.markdown("### Weighted Sum")
-    st.dataframe(pd.DataFrame({"Criteria": criteria, "Weighted Sum": weighted_sum}), use_container_width=True)
-
-    st.markdown("### Lambda Values")
-    st.dataframe(pd.DataFrame({"Criteria": criteria, "Lambda": lambda_vals}), use_container_width=True)
-
-    st.markdown("### Consistency Check")
-    st.write(f"λmax = {lambda_max:.4f}")
-    st.write(f"CI = {CI:.4f}")
-    st.write(f"RI = {RI}")
-    st.write(f"CR = {CR:.4f}")
+    st.markdown("#### Consistency")
+    st.write(f"λmax = {lambda_max:.4f} | CI = {CI:.4f} | CR = {CR:.4f}")
 
     if CR < 0.1:
         st.success("Consistent")
     else:
         st.error("Not Consistent")
 
-    st.markdown("### Weights (%)")
-
+    # GIS weights
     gis_weights = weights / weights.sum() * 100
     df_gis = pd.DataFrame({
         "Criteria": criteria,
         "Weight (%)": np.round(gis_weights, 2)
     })
 
+    st.markdown("#### Weights (%)")
     st.dataframe(df_gis, use_container_width=True)
 
     # Graph
@@ -197,11 +207,15 @@ if st.button("Run AHP"):
     plt.tight_layout()
     st.pyplot(fig)
 
+    st.markdown("</div>", unsafe_allow_html=True)
+
 # -----------------------------
 # FOOTER
 # -----------------------------
-st.markdown("---")
-st.markdown(
-    "<p style='text-align:center; color:gray;'>Anindo Paul Sourav | Geology and Mining, University of Barishal | anindo.glm@gmail.com</p>",
-    unsafe_allow_html=True
-)
+st.markdown("<div class='footer'>", unsafe_allow_html=True)
+st.markdown("""
+Anindo Paul Sourav  
+Geology and Mining, University of Barishal  
+anindo.glm@gmail.com
+""")
+st.markdown("</div>", unsafe_allow_html=True)
