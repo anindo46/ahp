@@ -49,46 +49,52 @@ st.markdown("""
 st.markdown("<div class='title'>AHP Calculator</div>", unsafe_allow_html=True)
 
 # -----------------------------
-# NOTICE + THEORY BLOCK
+# NOTICE ONLY (MAIN PAGE)
 # -----------------------------
 st.markdown("<div class='card'>", unsafe_allow_html=True)
-
-st.markdown("<div class='section-title'>Guide & Method</div>", unsafe_allow_html=True)
-
 st.markdown("""
 <div class='notice'>
 <b>How to use:</b><br>
 • Enter criteria using short names (Elev, Dist, Slp, etc.)<br>
-• Fill pairwise comparisons using Saaty scale (1–9)<br>
-• System auto-calculates weights and consistency<br><br>
-
-<b>Interpretation:</b><br>
-• CR &lt; 0.10 → Acceptable<br>
-• CR ≥ 0.10 → Inconsistent (revise inputs)<br><br>
-
-<b>Why this matters:</b><br>
-AHP converts subjective judgments into quantitative weights for GIS and decision-making.
+• Use Saaty scale (1–9) for comparison<br>
+• CR &lt; 0.10 → Acceptable consistency<br>
 </div>
 """, unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
-# -------- FORMULAS --------
-st.markdown("### AHP Formulas")
-st.latex(r"\lambda_{max} = \frac{1}{n} \sum \frac{(A \cdot W)_i}{W_i}")
-st.latex(r"CI = \frac{\lambda_{max} - n}{n - 1}")
-st.latex(r"CR = \frac{CI}{RI}")
+# -----------------------------
+# SIDEBAR INPUT
+# -----------------------------
+st.sidebar.header("Input")
 
-# -------- RI TABLE --------
+criteria_input = st.sidebar.text_area(
+    "Criteria",
+    "Elev, Dist, Slope, TWI, Rainf, D_D, Soil, Geo"
+)
+
+criteria = [c.strip() for c in criteria_input.split(",") if c.strip()]
+n = len(criteria)
+
+# -----------------------------
+# SIDEBAR THEORY (MOVED HERE)
+# -----------------------------
+st.sidebar.markdown("### AHP Formulas")
+st.sidebar.latex(r"\lambda_{max} = \frac{1}{n} \sum \frac{(A \cdot W)_i}{W_i}")
+st.sidebar.latex(r"CI = \frac{\lambda_{max} - n}{n - 1}")
+st.sidebar.latex(r"CR = \frac{CI}{RI}")
+
+# RI TABLE
 RI_dict = {
     1: 0, 2: 0, 3: 0.58, 4: 0.90,
     5: 1.12, 6: 1.24, 7: 1.32,
     8: 1.41, 9: 1.45, 10: 1.49
 }
 
-st.markdown("### Random Index (RI)")
-st.dataframe(pd.DataFrame(list(RI_dict.items()), columns=["n", "RI"]), use_container_width=True)
+st.sidebar.markdown("### RI Table")
+st.sidebar.dataframe(pd.DataFrame(list(RI_dict.items()), columns=["n", "RI"]))
 
-# -------- SAATY SCALE --------
-st.markdown("### Saaty Scale")
+# SAATY SCALE
+st.sidebar.markdown("### Saaty Scale")
 saaty_df = pd.DataFrame({
     "Value": [1, 3, 5, 7, 9, "2,4,6,8"],
     "Meaning": ["Equal", "Moderate", "Strong", "Very Strong", "Extreme", "Intermediate"],
@@ -101,20 +107,7 @@ saaty_df = pd.DataFrame({
         "Between values"
     ]
 })
-st.dataframe(saaty_df, use_container_width=True)
-
-st.markdown("</div>", unsafe_allow_html=True)
-
-# -----------------------------
-# INPUT
-# -----------------------------
-criteria_input = st.sidebar.text_area(
-    "Criteria",
-    "Elev, Dist, Slope, TWI, Rainf, D_D, Soil, Geo"
-)
-
-criteria = [c.strip() for c in criteria_input.split(",") if c.strip()]
-n = len(criteria)
+st.sidebar.dataframe(saaty_df)
 
 # -----------------------------
 # PAIRWISE MATRIX INPUT
