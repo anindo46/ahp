@@ -82,8 +82,45 @@ section[data-testid="stSidebar"] { background: #0d1117; border-right: 1px solid 
 """, unsafe_allow_html=True)
 
 # ─────────────────────────── HEADER ───────────────────────────
-st.markdown("<div class='title'>⬡ AHP CALCULATOR</div>", unsafe_allow_html=True)
-st.markdown("<div class='subtitle'>Analytic Hierarchy Process · Multi-Criteria Decision Analysis</div>", unsafe_allow_html=True)
+st.markdown("""
+<div style="display:flex;justify-content:center;padding:10px 0 20px 0;">
+<svg width="680" viewBox="0 0 680 110" xmlns="http://www.w3.org/2000/svg">
+<defs><style>
+.hex{fill:none;stroke:#80cbc4;stroke-width:1.2}
+.hex2{fill:none;stroke:#26a69a;stroke-width:0.7;opacity:.5}
+.ring{fill:none;stroke:#4db6ac;stroke-width:0.6;opacity:.35}
+.dot{fill:#80cbc4}
+.ln{stroke:#80cbc4;stroke-width:1;opacity:.6;fill:none}
+.s1{transform-origin:55px 42px;animation:spin 18s linear infinite}
+.s2{transform-origin:55px 42px;animation:spin 11s linear infinite reverse}
+.pu{animation:pulse 3s ease-in-out infinite}
+.fi{animation:fadein 1.2s ease both}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:.75}}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style></defs>
+<g class="fi">
+<g class="s1"><polygon class="hex" points="55,5 77,17 77,42 55,54 33,42 33,17"/></g>
+<g class="s2"><polygon class="hex2" points="55,0 82,15 82,50 55,65 28,50 28,15"/></g>
+<circle class="ring pu" cx="55" cy="29" r="22"/>
+<circle class="ring" cx="55" cy="29" r="15" style="animation-delay:.6s"/>
+<line class="ln" x1="55" y1="10" x2="55" y2="50"/>
+<line class="ln" x1="36" y1="20" x2="74" y2="40"/>
+<line class="ln" x1="74" y1="20" x2="36" y2="40"/>
+<circle class="dot" cx="55" cy="10" r="2.5"/>
+<circle class="dot" cx="36" cy="20" r="2"/>
+<circle class="dot" cx="74" cy="20" r="2"/>
+<circle class="dot" cx="55" cy="29" r="3.5"/>
+<circle class="dot" cx="36" cy="40" r="2"/>
+<circle class="dot" cx="74" cy="40" r="2"/>
+<circle class="dot" cx="55" cy="50" r="2.5"/>
+<text x="108" y="38" font-family="IBM Plex Mono,monospace" font-size="34" font-weight="700" letter-spacing="3" fill="#e0f7e9">AHP</text>
+<text x="108" y="60" font-family="IBM Plex Mono,monospace" font-size="34" font-weight="700" letter-spacing="3" fill="#80cbc4">CALCULATOR</text>
+<text x="110" y="80" font-family="IBM Plex Sans,sans-serif" font-size="12" letter-spacing="5" fill="#78909c">ANALYTIC HIERARCHY PROCESS</text>
+</g>
+</svg>
+</div>
+""", unsafe_allow_html=True)
 
 # ─────────────────────────── NOTICE ───────────────────────────
 st.markdown("""
