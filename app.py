@@ -6,12 +6,10 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="AHP Calculator", layout="wide")
 
 # -----------------------------
-# PREMIUM CLEAN CSS (SAFE)
+# CLEAN PREMIUM STYLE
 # -----------------------------
 st.markdown("""
 <style>
-
-/* Cards */
 .card {
     background-color: rgba(255,255,255,0.04);
     padding: 18px;
@@ -19,36 +17,27 @@ st.markdown("""
     border: 1px solid rgba(255,255,255,0.08);
     margin-bottom: 20px;
 }
-
-/* Header */
 .title {
     text-align: center;
-    font-size: 38px;
+    font-size: 36px;
     font-weight: 700;
-    margin-bottom: 5px;
 }
-
 .subtitle {
     text-align: center;
     color: #9aa0a6;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
-
-/* Section title */
 .section-title {
     font-size: 20px;
     font-weight: 600;
     margin-bottom: 10px;
 }
-
-/* Footer */
 .footer {
     text-align: center;
     color: #9aa0a6;
     font-size: 14px;
     padding-top: 20px;
 }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -82,7 +71,7 @@ st.sidebar.latex(r"CI = \frac{\lambda_{max} - n}{n - 1}")
 st.sidebar.latex(r"CR = \frac{CI}{RI}")
 
 # -----------------------------
-# RI TABLE
+# RI TABLE + CHART
 # -----------------------------
 RI_dict = {
     1: 0, 2: 0, 3: 0.58, 4: 0.90,
@@ -90,32 +79,31 @@ RI_dict = {
     8: 1.41, 9: 1.45, 10: 1.49
 }
 
+ri_df = pd.DataFrame(list(RI_dict.items()), columns=["n", "RI"])
 st.sidebar.markdown("### RI Table")
-st.sidebar.dataframe(pd.DataFrame(list(RI_dict.items()), columns=["n", "RI"]))
+st.sidebar.dataframe(ri_df)
+
+fig_ri, ax_ri = plt.subplots()
+ax_ri.plot(ri_df["n"], ri_df["RI"], marker='o')
+ax_ri.set_title("RI Trend")
+st.sidebar.pyplot(fig_ri)
 
 # -----------------------------
-# SAATY SCALE (CARD)
+# SAATY SCALE
 # -----------------------------
 st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.markdown("<div class='section-title'>Saaty Scale</div>", unsafe_allow_html=True)
+st.markdown("<div class='section-title'>Saaty Scale (Saaty, 2000)</div>", unsafe_allow_html=True)
 
 saaty_df = pd.DataFrame({
     "Scale": [1, 3, 5, 7, 9, "2,4,6,8"],
-    "Meaning": [
-        "Equal importance",
-        "Moderate importance",
-        "Strong importance",
-        "Very strong importance",
-        "Extreme importance",
-        "Intermediate values"
-    ],
+    "Meaning": ["Equal", "Moderate", "Strong", "Very Strong", "Extreme", "Intermediate"],
     "Explanation": [
-        "Two criteria contribute equally",
-        "Slightly favor one over another",
-        "Strongly favor one",
-        "Dominance clearly evident",
-        "Highest level of preference",
-        "Between adjacent judgments"
+        "Equal contribution",
+        "Slightly favor",
+        "Strongly favor",
+        "Dominance evident",
+        "Highest preference",
+        "Between judgments"
     ]
 })
 
@@ -123,30 +111,39 @@ st.dataframe(saaty_df, use_container_width=True)
 st.markdown("</div>", unsafe_allow_html=True)
 
 # -----------------------------
-# MATRIX INPUT (CARD)
+# PAIRWISE INPUT GRID (FIXED)
 # -----------------------------
 st.markdown("<div class='card'>", unsafe_allow_html=True)
 st.markdown("<div class='section-title'>Pairwise Comparison</div>", unsafe_allow_html=True)
 
 matrix = np.ones((n, n))
-cols = st.columns(n)
 
 for i in range(n):
-    for j in range(i + 1, n):
-        val = cols[j].number_input(
-            f"{criteria[i]} vs {criteria[j]}",
-            min_value=0.11,
-            max_value=9.0,
-            value=1.0,
-            step=0.1,
-            key=f"{i}-{j}"
-        )
-        matrix[i][j] = val
-        matrix[j][i] = 1 / val
+    cols = st.columns(n)
+    for j in range(n):
+        if i == j:
+            cols[j].markdown("—")
+        elif j > i:
+            val = cols[j].number_input(
+                f"{criteria[i]} vs {criteria[j]}",
+                min_value=0.11,
+                max_value=9.0,
+                value=1.0,
+                step=0.1,
+                key=f"{i}-{j}"
+            )
+            matrix[i][j] = val
+            matrix[j][i] = 1 / val
+        else:
+            cols[j].markdown(" ")
 
 df_matrix = pd.DataFrame(matrix, index=criteria, columns=criteria)
 
-st.markdown("#### Pairwise Matrix")
+# add sums
+df_matrix["Row Sum"] = df_matrix.sum(axis=1)
+col_sum_row = df_matrix.sum(axis=0)
+df_matrix.loc["Column Sum"] = col_sum_row
+
 st.dataframe(df_matrix, use_container_width=True)
 st.markdown("</div>", unsafe_allow_html=True)
 
@@ -170,31 +167,55 @@ if st.button("Run AHP"):
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.markdown("<div class='section-title'>Results</div>", unsafe_allow_html=True)
 
+    # normalized
+    st.markdown("#### Normalized Matrix")
     st.dataframe(pd.DataFrame(norm_matrix, index=criteria, columns=criteria), use_container_width=True)
 
-    df_weights = pd.DataFrame({"Criteria": criteria, "Weight": weights})
-    st.dataframe(df_weights, use_container_width=True)
+    # detailed table
+    st.markdown("#### Detailed Table")
 
-    st.markdown(f"**λmax:** {lambda_max:.4f} | **CI:** {CI:.4f} | **CR:** {CR:.4f}")
+    table = pd.DataFrame(norm_matrix, index=criteria, columns=criteria)
+    table["Weighted Sum"] = weighted_sum
+    table["Weight"] = weights
+    table["WSV/W"] = lambda_vals
+
+    st.dataframe(table, use_container_width=True)
+
+    # consistency
+    st.markdown("#### Consistency")
+    st.write(f"λmax = {lambda_max:.4f} | CI = {CI:.4f} | CR = {CR:.4f}")
 
     if CR < 0.1:
         st.success("Consistent")
     else:
         st.error("Not Consistent")
 
-    # GIS weights
-    gis_weights = weights / weights.sum() * 100
+    # weights %
+    st.markdown("#### Weights (%)")
     st.dataframe(pd.DataFrame({
         "Criteria": criteria,
-        "Weight (%)": np.round(gis_weights, 2)
+        "Weight (%)": np.round(weights * 100, 2)
     }), use_container_width=True)
 
-    # Graph
+    # plots
+    st.markdown("#### Weight Distribution")
     fig, ax = plt.subplots()
     ax.bar(criteria, weights)
     plt.xticks(rotation=45)
-    plt.tight_layout()
     st.pyplot(fig)
+
+    st.markdown("#### Lambda Distribution")
+    fig2, ax2 = plt.subplots()
+    ax2.plot(lambda_vals, marker='o')
+    ax2.axhline(lambda_max, linestyle='--')
+    st.pyplot(fig2)
+
+    # interpretation
+    st.markdown("#### Interpretation")
+    if CR < 0.1:
+        st.success("Judgement is consistent and reliable.")
+    else:
+        st.error("Judgement inconsistent. Revise comparisons.")
 
     st.markdown("</div>", unsafe_allow_html=True)
 
