@@ -55,7 +55,7 @@ st.markdown("<div class='title'>AHP Calculator</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Analytic Hierarchy Process Tool</div>", unsafe_allow_html=True)
 
 # -----------------------------
-# SIDEBAR INPUT
+# SIDEBAR
 # -----------------------------
 st.sidebar.header("Input")
 
@@ -119,8 +119,7 @@ st.markdown("<div class='section-title'>Pairwise Comparison</div>", unsafe_allow
 
 st.markdown("""
 <div class='note'>
-<b>N.B.</b> Use short variable names to avoid layout issues  
-(e.g., Elevation → El, Slope → Sl, Distance → Dis, Drainage Density → DD)
+<b>N.B.</b> Use short variable names (El, Sl, Dis, DD) to avoid layout issues.
 </div>
 """, unsafe_allow_html=True)
 
@@ -146,7 +145,6 @@ for i in range(n):
             cols[j].markdown(" ")
 
 df_matrix = pd.DataFrame(matrix, index=criteria, columns=criteria)
-
 df_matrix["Row Sum"] = df_matrix.sum(axis=1)
 df_matrix.loc["Column Sum"] = df_matrix.sum(axis=0)
 
@@ -171,63 +169,29 @@ if st.button("Run AHP"):
     CR = CI / RI if RI != 0 else 0
 
     st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>Results</div>", unsafe_allow_html=True)
-
-    # -----------------------------
-    # NORMALIZED MATRIX
-    # -----------------------------
-    st.markdown("#### Normalized Matrix")
-    st.dataframe(pd.DataFrame(norm_matrix, index=criteria, columns=criteria), use_container_width=True)
-
-    # -----------------------------
-    # TABLE 4 (CONSISTENCY TABLE)
-    # -----------------------------
-    st.markdown("#### Consistency Index Table")
+    st.markdown("<div class='section-title'>Analytical Results Table</div>", unsafe_allow_html=True)
 
     norm_df = pd.DataFrame(norm_matrix, index=criteria, columns=criteria)
 
-    table4 = norm_df.copy()
-    table4["Weighted Sum"] = weighted_sum
-    table4["Criteria Weight"] = weights
-    table4["WSV/W"] = lambda_vals
+    table = norm_df.copy()
+    table["Weighted Sum"] = weighted_sum
+    table["Weight (W)"] = weights
+    table["Lambda (WS/W)"] = lambda_vals
 
-    st.dataframe(table4, use_container_width=True)
+    st.dataframe(table, use_container_width=True)
 
-    # C.W row
-    cw_row = pd.DataFrame([weights], columns=criteria)
-    cw_row.index = ["C.W"]
-
-    st.markdown("**Criteria Weights (C.W):**")
-    st.dataframe(cw_row, use_container_width=True)
-
-    # -----------------------------
-    # CONSISTENCY VALUES
-    # -----------------------------
-    st.markdown("#### Consistency")
-
+    st.markdown("#### Key Metrics")
     st.write(f"λmax = {lambda_max:.3f}")
     st.write(f"CI = {CI:.3f}")
     st.write(f"CR = {CR:.3f}")
 
-    if CR < 0.1:
-        st.success("Consistent")
-    else:
-        st.error("Not Consistent")
-
-    # -----------------------------
-    # WEIGHTS %
-    # -----------------------------
     st.markdown("#### Weights (%)")
     st.dataframe(pd.DataFrame({
         "Criteria": criteria,
         "Weight (%)": np.round(weights * 100, 2)
     }), use_container_width=True)
 
-    # -----------------------------
-    # PLOT
-    # -----------------------------
     st.markdown("#### Weight Distribution")
-
     fig, ax = plt.subplots()
     ax.bar(criteria, weights)
     plt.xticks(rotation=45)
