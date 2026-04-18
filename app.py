@@ -6,43 +6,49 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="AHP Calculator", layout="wide")
 
 # -----------------------------
-# LIGHT GREY UI STYLE
+# PROFESSIONAL STYLE
 # -----------------------------
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background-color: #f2f2f2;
-        color: #111;
-    }
-    .block-container {
-        padding-top: 2rem;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown("""
+<style>
+body {
+    background-color: #f5f6fa;
+}
+.block-container {
+    padding-top: 2rem;
+}
+
+h1 {
+    font-size: 40px;
+    font-weight: 700;
+    text-align: center;
+}
+
+h2 {
+    font-weight: 600;
+    margin-top: 30px;
+}
+
+.section-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # -----------------------------
 # HEADER
 # -----------------------------
+st.markdown("<h1>AHP Calculator</h1>", unsafe_allow_html=True)
 st.markdown(
-    """
-    <div style='text-align: center;'>
-        <h1>AHP Calculator</h1>
-        <p><b>Analytic Hierarchy Process Tool</b></p>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    "<div style='text-align:center;'>🌊 AHP Tool 🌍</div>",
+    "<p style='text-align:center; color:gray;'>Analytic Hierarchy Process (AHP) Tool</p>",
     unsafe_allow_html=True
 )
 
 # -----------------------------
-# SIDEBAR INPUT
+# SIDEBAR
 # -----------------------------
 st.sidebar.header("Input")
 
@@ -77,9 +83,9 @@ st.sidebar.markdown("### RI Table")
 st.sidebar.dataframe(pd.DataFrame(list(RI_dict.items()), columns=["n", "RI"]))
 
 # -----------------------------
-# SAATY SCALE TABLE (NO IMAGE)
+# SAATY SCALE TABLE
 # -----------------------------
-st.markdown("### Saaty Scale Reference")
+st.markdown("## Saaty Scale")
 
 saaty_df = pd.DataFrame({
     "Scale": [1, 3, 5, 7, 9, "2,4,6,8"],
@@ -106,10 +112,9 @@ st.dataframe(saaty_df, use_container_width=True)
 # -----------------------------
 # MATRIX INPUT
 # -----------------------------
-st.subheader("Pairwise Comparison")
+st.markdown("## Pairwise Comparison")
 
 matrix = np.ones((n, n))
-
 cols = st.columns(n)
 
 for i in range(n):
@@ -149,9 +154,8 @@ if st.button("Run AHP"):
 
     st.success("Calculation Complete")
 
-    # -----------------------------
-    # OUTPUT TABLES
-    # -----------------------------
+    st.markdown("## Results")
+
     st.markdown("### Normalized Matrix")
     st.dataframe(pd.DataFrame(norm_matrix, index=criteria, columns=criteria), use_container_width=True)
 
@@ -165,10 +169,7 @@ if st.button("Run AHP"):
     st.markdown("### Lambda Values")
     st.dataframe(pd.DataFrame({"Criteria": criteria, "Lambda": lambda_vals}), use_container_width=True)
 
-    # -----------------------------
-    # CONSISTENCY
-    # -----------------------------
-    st.markdown("### Consistency")
+    st.markdown("### Consistency Check")
     st.write(f"λmax = {lambda_max:.4f}")
     st.write(f"CI = {CI:.4f}")
     st.write(f"RI = {RI}")
@@ -179,9 +180,6 @@ if st.button("Run AHP"):
     else:
         st.error("Not Consistent")
 
-    # -----------------------------
-    # GIS WEIGHTS
-    # -----------------------------
     st.markdown("### Weights (%)")
 
     gis_weights = weights / weights.sum() * 100
@@ -192,31 +190,18 @@ if st.button("Run AHP"):
 
     st.dataframe(df_gis, use_container_width=True)
 
-    # -----------------------------
-    # GRAPH
-    # -----------------------------
-    st.markdown("### Weight Distribution")
-
+    # Graph
     fig, ax = plt.subplots()
     ax.bar(criteria, weights)
     plt.xticks(rotation=45)
     plt.tight_layout()
     st.pyplot(fig)
 
-    # -----------------------------
-    # DOWNLOAD
-    # -----------------------------
-    csv = df_gis.to_csv(index=False).encode("utf-8")
-    st.download_button("Download CSV", csv, "weights.csv", "text/csv")
-
 # -----------------------------
 # FOOTER
 # -----------------------------
 st.markdown("---")
 st.markdown(
-    """
-    Anindo Paul Sourav  
-    Geology and Mining, University of Barishal  
-    anindo.glm@gmail.com
-    """
+    "<p style='text-align:center; color:gray;'>Anindo Paul Sourav | Geology and Mining, University of Barishal | anindo.glm@gmail.com</p>",
+    unsafe_allow_html=True
 )
