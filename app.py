@@ -29,9 +29,10 @@ st.markdown("""
 }
 .notice {
     background-color: rgba(255,255,255,0.05);
-    padding: 12px;
-    border-left: 4px solid #4CAF50;
-    border-radius: 6px;
+    padding: 14px;
+    border-left: 5px solid #00c853;
+    border-radius: 8px;
+    line-height: 1.6;
 }
 .footer {
     text-align: center;
@@ -48,16 +49,60 @@ st.markdown("""
 st.markdown("<div class='title'>AHP Calculator</div>", unsafe_allow_html=True)
 
 # -----------------------------
-# NOTICE
+# NOTICE + THEORY BLOCK
 # -----------------------------
 st.markdown("<div class='card'>", unsafe_allow_html=True)
+
+st.markdown("<div class='section-title'>Guide & Method</div>", unsafe_allow_html=True)
+
 st.markdown("""
 <div class='notice'>
-Use short names (Elev, Dist, Slp, etc).<br>
-Saaty scale (1–9).<br>
-CR &lt; 0.1 = acceptable.<br>
+<b>How to use:</b><br>
+• Enter criteria using short names (Elev, Dist, Slp, etc.)<br>
+• Fill pairwise comparisons using Saaty scale (1–9)<br>
+• System auto-calculates weights and consistency<br><br>
+
+<b>Interpretation:</b><br>
+• CR &lt; 0.10 → Acceptable<br>
+• CR ≥ 0.10 → Inconsistent (revise inputs)<br><br>
+
+<b>Why this matters:</b><br>
+AHP converts subjective judgments into quantitative weights for GIS and decision-making.
 </div>
 """, unsafe_allow_html=True)
+
+# -------- FORMULAS --------
+st.markdown("### AHP Formulas")
+st.latex(r"\lambda_{max} = \frac{1}{n} \sum \frac{(A \cdot W)_i}{W_i}")
+st.latex(r"CI = \frac{\lambda_{max} - n}{n - 1}")
+st.latex(r"CR = \frac{CI}{RI}")
+
+# -------- RI TABLE --------
+RI_dict = {
+    1: 0, 2: 0, 3: 0.58, 4: 0.90,
+    5: 1.12, 6: 1.24, 7: 1.32,
+    8: 1.41, 9: 1.45, 10: 1.49
+}
+
+st.markdown("### Random Index (RI)")
+st.dataframe(pd.DataFrame(list(RI_dict.items()), columns=["n", "RI"]), use_container_width=True)
+
+# -------- SAATY SCALE --------
+st.markdown("### Saaty Scale")
+saaty_df = pd.DataFrame({
+    "Value": [1, 3, 5, 7, 9, "2,4,6,8"],
+    "Meaning": ["Equal", "Moderate", "Strong", "Very Strong", "Extreme", "Intermediate"],
+    "Description": [
+        "Equal importance",
+        "Slight preference",
+        "Strong importance",
+        "Very strong importance",
+        "Extreme importance",
+        "Between values"
+    ]
+})
+st.dataframe(saaty_df, use_container_width=True)
+
 st.markdown("</div>", unsafe_allow_html=True)
 
 # -----------------------------
@@ -105,7 +150,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 # -----------------------------
 if st.button("Run AHP"):
 
-    # -------- TABLE 1 --------
+    # TABLE 1
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.markdown("<div class='section-title'>Table 1: Pairwise Comparison Matrix</div>", unsafe_allow_html=True)
 
@@ -116,11 +161,11 @@ if st.button("Run AHP"):
     st.dataframe(df1, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # -------- NORMALIZATION --------
+    # NORMALIZATION
     col_sum = matrix.sum(axis=0)
     norm_matrix = matrix / col_sum
 
-    # -------- TABLE 2 --------
+    # TABLE 2
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.markdown("<div class='section-title'>Table 2: Normalized Pairwise Matrix</div>", unsafe_allow_html=True)
 
@@ -130,7 +175,7 @@ if st.button("Run AHP"):
     st.dataframe(df2, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # -------- WEIGHTS --------
+    # WEIGHTS
     eigvals, eigvecs = np.linalg.eig(matrix)
     max_index = np.argmax(eigvals.real)
     weights = np.abs(eigvecs[:, max_index].real)
@@ -141,11 +186,10 @@ if st.button("Run AHP"):
     lambda_max = np.mean(lambda_vals)
 
     CI = (lambda_max - n) / (n - 1)
-    RI_dict = {8: 1.41}
     RI = RI_dict.get(n, 1.41)
     CR = CI / RI
 
-    # -------- TABLE 3 (CONSISTENCY MATRIX FULL GRID) --------
+    # TABLE 3
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.markdown("<div class='section-title'>Table 3: Consistency Matrix</div>", unsafe_allow_html=True)
 
@@ -156,7 +200,7 @@ if st.button("Run AHP"):
     st.dataframe(df3, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # -------- TABLE 4 (CONSISTENCY SUMMARY) --------
+    # TABLE 4
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.markdown("<div class='section-title'>Table 4: Consistency Summary</div>", unsafe_allow_html=True)
 
@@ -176,22 +220,19 @@ if st.button("Run AHP"):
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # -------- TABLE 5 (GIS WEIGHT) --------
+    # TABLE 5
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.markdown("<div class='section-title'>Table 5: GIS Usable Weight</div>", unsafe_allow_html=True)
 
-    gis_weights = np.round(weights, 2)
-
     df5 = pd.DataFrame({
         "Criteria": criteria,
-        "GIS Weight": gis_weights
+        "GIS Weight": np.round(weights, 2)
     })
 
     st.dataframe(df5, use_container_width=True)
-
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # -------- GRAPH --------
+    # GRAPH
     fig, ax = plt.subplots()
     ax.bar(criteria, weights)
     plt.xticks(rotation=45)
