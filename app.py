@@ -587,42 +587,44 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
 
 # ─────────────────────────── ANIMATED CREDITS ───────────────────────────
 st.markdown('''
-<div style="margin-top:60px;padding:40px 20px;text-align:center;
-border-top:1px solid #0d1824;">
+<div style="margin-top:50px;padding:30px 20px;text-align:center;
+border-top:1px solid #0f1a24;">
 
-  <!-- Card -->
-  <div style="max-width:320px;margin:0 auto;
-  background:#0c1420;border-radius:16px;
-  border:1px solid #162030;padding:25px;">
-
-    <div style="font-size:10px;letter-spacing:3px;
-    color:#2dd4bf;font-family:monospace;margin-bottom:6px;">
-    CREATED BY</div>
-
-    <div style="font-size:22px;color:#d4e4f0;font-weight:700;">
-    Anindo Paul</div>
-
-    <div style="font-size:16px;color:#2dd4bf;margin-bottom:10px;">
-    Sourav</div>
-
-    <div style="font-size:10px;color:#2a3f55;">
-    AHP Calculator · 2025
-    </div>
-
+  <!-- Name -->
+  <div style="font-size:16px;font-weight:700;color:#2dd4bf;
+  letter-spacing:0.5px;margin-bottom:6px;">
+    Anindo Paul Sourav
   </div>
 
-  <!-- Links -->
-  <div style="margin-top:18px;display:flex;justify-content:center;gap:10px;">
+  <!-- Subtitle -->
+  <div style="font-size:12px;color:#5b7285;margin-bottom:16px;">
+    AHP Calculator · Free for all users
+  </div>
+
+  <!-- Divider -->
+  <div style="height:1px;width:60px;margin:0 auto 18px auto;
+  background:linear-gradient(90deg,transparent,#2dd4bf40,transparent);"></div>
+
+  <!-- Buttons -->
+  <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;">
 
     <a href="https://www.linkedin.com/in/anindo046/" target="_blank"
-    style="padding:6px 14px;border-radius:20px;background:#061510;
-    border:1px solid #2dd4bf20;color:#2dd4bf;font-size:11px;text-decoration:none;">
-    🔗 LinkedIn</a>
+    style="padding:7px 16px;border-radius:20px;
+    background:rgba(45,212,191,0.08);
+    border:1px solid rgba(45,212,191,0.25);
+    color:#2dd4bf;font-size:11px;font-weight:600;
+    text-decoration:none;transition:0.2s;">
+    🔗 LinkedIn
+    </a>
 
     <a href="https://anindo46.github.io/portfolio/" target="_blank"
-    style="padding:6px 14px;border-radius:20px;background:#090e16;
-    border:1px solid #131f2e;color:#2a3f55;font-size:11px;text-decoration:none;">
-    🌐 Portfolio</a>
+    style="padding:7px 16px;border-radius:20px;
+    background:#0a0f14;
+    border:1px solid #1a2633;
+    color:#6b8497;font-size:11px;font-weight:600;
+    text-decoration:none;">
+    🌐 Portfolio
+    </a>
 
   </div>
 
