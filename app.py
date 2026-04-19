@@ -602,13 +602,14 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
     card_close()
 
     # CHARTS
+   # CHARTS
     card_open("Weight Visualization", "Charts", "Priority weight distribution across criteria")
 
     BG   = "#060a0e"
     SURF = "#0c1420"
     TEAL = "#2dd4bf"
-    MUT  = "#2a3f55"
-    TXT  = "#6a8a9a"
+    MUT  = "#4a6070"  # Slightly brightened muted text
+    TXT  = "#a7f3d0"  # Brighter text for chart titles
 
     palette = ["#2dd4bf","#0d9488","#0f766e","#134e4a","#115e59",
                "#1d9488","#14b8a6","#5eead4","#99f6e4","#ccfbf1"]
@@ -625,21 +626,48 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
     bc = [palette[i % len(palette)] for i in range(len(sorted_cw))]
     bars = ax1.bar(sorted_criteria, sorted_cw, color=bc,
                    edgecolor=BG, linewidth=1.4, width=0.56, zorder=3)
-    ax1.set_title("Criteria Weight (CW)", color=TXT, fontsize=10,
-                  pad=12, fontfamily="monospace", loc="left")
-    ax1.set_xlabel("Criteria", color=MUT, fontsize=9, labelpad=7)
-    ax1.set_ylabel("CW",       color=MUT, fontsize=9, labelpad=7)
-    ax1.tick_params(colors=MUT, labelsize=8)
+    ax1.set_title("Criteria Weight (CW)", color=TXT, fontsize=11, fontweight="bold",
+                  pad=15, fontfamily="monospace", loc="left")
+    ax1.set_xlabel("Criteria", color=MUT, fontsize=10, labelpad=9)
+    ax1.set_ylabel("CW",       color=MUT, fontsize=10, labelpad=9)
+    ax1.tick_params(colors=MUT, labelsize=9)
     for sp in ax1.spines.values():
         sp.set_color("#131f2e"); sp.set_linewidth(0.5)
     ax1.grid(axis="y", color="#131f2e", linewidth=0.5, zorder=0)
     ax1.set_axisbelow(True)
+    
+    # Enhanced Bar chart text (bold and bright)
     for bar, w in zip(bars, sorted_cw):
         ax1.text(bar.get_x() + bar.get_width()/2,
                  bar.get_height() + max(sorted_cw)*0.018,
                  f"{w:.4f}", ha="center", va="bottom",
-                 color=TEAL, fontsize=7.5, fontfamily="monospace")
+                 color="#ffffff", fontsize=9, fontweight="bold", fontfamily="monospace")
 
+    # Pie
+    ax2 = axes[1]
+    ax2.set_facecolor(BG)
+    wedges, texts, auts = ax2.pie(
+        sorted_cw, labels=sorted_criteria, autopct="%1.1f%%",
+        colors=palette[:len(sorted_cw)], startangle=140,
+        pctdistance=0.74, # Brought percentages slightly closer to center
+        # Enhanced Pie chart external labels
+        textprops={"color": "#e2e8f0", "fontsize": 10, "fontweight": "500", "fontfamily": "monospace"},
+        wedgeprops={"edgecolor": BG, "linewidth": 2.5}
+    )
+    
+    # Enhanced Pie chart internal percentages (bold white)
+    for at in auts:
+        at.set_color("#ffffff")
+        at.set_fontsize(9.5)
+        at.set_fontweight("bold")
+        
+    ax2.set_title("CW Distribution", color=TXT, fontsize=11, fontweight="bold",
+                  pad=15, fontfamily="monospace", loc="left")
+
+    plt.tight_layout()
+    st.pyplot(fig, use_container_width=True)
+    plt.close(fig)
+    card_close()
     # Pie
     ax2 = axes[1]
     ax2.set_facecolor(BG)
