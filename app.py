@@ -448,10 +448,20 @@ st.markdown("""
 
 matrix = np.ones((n, n))
 
+# --- ADDED: Column Header Row ---
+header_cols = st.columns([1.0] + [1] * n)
+header_cols[0].write("") # Empty top-left corner
+for j in range(n):
+    header_cols[j+1].markdown(
+        f"<div class='ahp-row-label' style='text-align:center; color:#2dd4bf; border-bottom:1px solid #131f2e; padding-bottom:8px; margin-bottom:8px;'>{criteria[j]}</div>",
+        unsafe_allow_html=True
+    )
+# --------------------------------
+
 for i in range(n):
     cols = st.columns([1.0] + [1] * n)
     cols[0].markdown(
-        f"<div class='ahp-row-label'>{criteria[i]}</div>",
+        f"<div class='ahp-row-label' style='margin-top:4px;'>{criteria[i]}</div>",
         unsafe_allow_html=True
     )
     for j in range(n):
