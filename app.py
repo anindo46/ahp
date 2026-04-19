@@ -1,7 +1,8 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import plotly.graph_objects as go
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 
 st.set_page_config(page_title="AHP Calculator", layout="wide")
 
@@ -12,15 +13,7 @@ st.markdown("""
 
 html, body, [class*="css"] { font-family: 'Space Grotesk', sans-serif; }
 
-/* Mathematical Blueprint App Background - Static Grid Only, Scan Effect Removed */
-.stApp {
-    background-color: #060a0e;
-    background-image:
-        linear-gradient(rgba(45, 212, 191, 0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(45, 212, 191, 0.015) 1px, transparent 1px);
-    background-size: 30px 30px;
-    background-attachment: fixed;
-}
+.stApp { background: #060a0e; }
 
 section[data-testid="stSidebar"] {
     background: #080d12 !important;
@@ -127,98 +120,37 @@ section[data-testid="stSidebar"] * { font-family: 'Space Grotesk', sans-serif !i
     letter-spacing: 0.5px;
 }
 
-/* ────────────────────────────────────────────────────────
-   PREMIUM MATHEMATICAL METRIC BOXES 
-   ──────────────────────────────────────────────────────── */
+/* Metric boxes */
 .ahp-metric {
-    background: linear-gradient(160deg, #0c1420 0%, #060a0e 100%);
-    border-radius: 16px;
-    border: 1px solid #1a2736;
-    padding: 24px 16px;
+    background: #090e16;
+    border-radius: 14px;
+    border: 1px solid #131f2e;
+    padding: 20px 14px;
     text-align: center;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.03);
-    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease, border-color 0.2s ease;
-    z-index: 1;
 }
-
-.ahp-metric:hover {
-    transform: translateY(-4px) scale(1.01);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(45, 212, 191, 0.08);
-    border-color: #2dd4bf66;
-}
-
-/* Inner glow */
-.ahp-metric::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: radial-gradient(circle at 50% 0%, rgba(45, 212, 191, 0.08), transparent 70%);
-    pointer-events: none;
-    z-index: -1;
-}
-
-/* GPU-Accelerated background grid animation */
-.ahp-metric-grid {
-    position: absolute;
-    top: -50%; left: -50%; width: 200%; height: 200%;
-    background-image:
-        linear-gradient(rgba(45, 212, 191, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(45, 212, 191, 0.04) 1px, transparent 1px);
-    background-size: 24px 24px;
-    z-index: -2;
-    transform: rotate(15deg) translateY(0);
-    animation: metricGridMove 12s linear infinite;
-    pointer-events: none;
-    will-change: transform;
-}
-@keyframes metricGridMove {
-    0% { transform: rotate(15deg) translateY(0); }
-    100% { transform: rotate(15deg) translateY(-24px); }
-}
-
 .ahp-metric-label {
-    font-size: 13px;
-    color: #94a3b8;
-    letter-spacing: 2px;
+    font-size: 9px;
+    color: #2a3f55;
+    letter-spacing: 3px;
     text-transform: uppercase;
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 600;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 10px;
 }
-
-.math-sym {
-    font-family: 'Cambria Math', 'Times New Roman', serif;
-    font-style: italic;
-    font-size: 18px;
-    color: #5eead4;
-    text-transform: none;
-    letter-spacing: 0;
-}
-
 .ahp-metric-val {
-    font-size: 26px;
+    font-size: 20px;
     font-weight: 700;
-    color: #f1f5f9;
+    color: #c8d8e8;
     font-family: 'JetBrains Mono', monospace;
     letter-spacing: -0.5px;
-    text-shadow: 0 0 10px rgba(255,255,255,0.05);
 }
-.ahp-metric-val.ok    { color: #2dd4bf; text-shadow: 0 0 15px rgba(45, 212, 191, 0.2); }
-.ahp-metric-val.fail { color: #f87171; text-shadow: 0 0 15px rgba(248, 113, 113, 0.2); }
-
+.ahp-metric-val.ok    { color: #2dd4bf; }
+.ahp-metric-val.fail { color: #f87171; }
 .ahp-metric-sub {
-    font-size: 11px;
-    color: #64748b;
-    margin-top: 8px;
-    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    color: #2a3f55;
+    margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace;
     letter-spacing: 0.5px;
-    font-weight: 500;
 }
 
 /* Button */
@@ -450,7 +382,7 @@ font-weight:600;letter-spacing:0.5px;">n = {n} &nbsp;criteria detected</span>
 """, unsafe_allow_html=True)
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### 📐 AHP Formulas")
+st.sidebar.markdown("### ðﾟﾓﾐ AHP Formulas")
 for label, formula in [
     ("Step 1 · Normalize columns",      r"\bar{a}_{ij} = \frac{a_{ij}}{\sum_{k=1}^{n} a_{kj}}"),
     ("Step 2 · Average / Weight",       r"W_i = \frac{1}{n} \sum_{j=1}^{n} \bar{a}_{ij}"),
@@ -478,7 +410,7 @@ RI_dict = {
    11: 1.51,12: 1.48,13: 1.56,14: 1.57, 15: 1.59
 }
 
-st.sidebar.markdown("### 📊 Random Index (RI)")
+st.sidebar.markdown("### ðﾟﾓﾊ Random Index (RI)")
 ri_df = pd.DataFrame(list(RI_dict.items()), columns=["n", "RI"])
 st.sidebar.dataframe(ri_df, use_container_width=True, hide_index=True)
 st.sidebar.markdown(f"""
@@ -489,7 +421,7 @@ n = {n} &nbsp;&#8594;&nbsp; RI = {RI_dict.get(n, 1.59)}</div>
 """, unsafe_allow_html=True)
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### 🔢 Saaty Scale")
+st.sidebar.markdown("### ðﾟﾔﾢ Saaty Scale")
 saaty_df = pd.DataFrame({
     "Val":     [1,2,3,4,5,6,7,8,9],
     "Meaning": ["Equal","Weak","Moderate","Mod+","Strong",
@@ -634,19 +566,16 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
     m1, m2, m3, m4 = st.columns(4)
     cr_cls     = "ok"           if CR < 0.10 else "fail"
     cr_verdict = "Consistent"   if CR < 0.10 else "Inconsistent"
-    
-    # ── Premium Animated Metric Boxes ──
     for col, lbl, val, sub in [
-        (m1, "<span class='math-sym'>λ</span><sub>max</sub>", f"{lambda_max:.6f}", "Principal Eigenvalue"),
-        (m2, "<span class='math-sym'>CI</span>",              f"{CI:.6f}",          "Consistency Index"),
-        (m3, f"<span class='math-sym'>RI</span> <span style='font-size:11px; font-style:normal; color:#475569; font-family:monospace; margin-left:6px; letter-spacing:0;'>n={n}</span>", f"{RI}", "Random Index"),
-        (m4, "<span class='math-sym'>CR</span>",              f"{CR:.6f}",           cr_verdict),
+        (m1, "λ max",       f"{lambda_max:.6f}", "Principal eigenvalue"),
+        (m2, "CI",          f"{CI:.6f}",          "Consistency index"),
+        (m3, f"RI  n={n}",  f"{RI}",              "Random index"),
+        (m4, "CR",          f"{CR:.6f}",           cr_verdict),
     ]:
-        extra_cls = f" {cr_cls}" if "CR" in lbl else ""
+        extra_cls = f" {cr_cls}" if lbl == "CR" else ""
         with col:
             st.markdown(f"""
             <div class="ahp-metric">
-              <div class="ahp-metric-grid"></div>
               <div class="ahp-metric-label">{lbl}</div>
               <div class="ahp-metric-val{extra_cls}">{val}</div>
               <div class="ahp-metric-sub">{sub}</div>
@@ -683,15 +612,21 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
     
     st.markdown("""
     <div style="background:#061510; border:1px solid #131f2e; border-left:3px solid #2dd4bf; padding:14px 18px; border-radius:8px; margin-top:16px;">
-        <div style="color:#2dd4bf; font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">🗺️ GIS Application Ready</div>
+        <div style="color:#2dd4bf; font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">ðﾟﾗﾺ️ GIS Application Ready</div>
         <div style="color:#8a9fae; font-size:12px; line-height:1.6;">Input the <b style="color:#c8d8e8;">Criteria CW</b> values into your spatial analysis tool (e.g., ArcGIS Weighted Overlay, QGIS Raster Calculator) to generate your suitability map. Ensure all input raster layers are reclassified to a common scale before multiplying by these weights.</div>
     </div>
     """, unsafe_allow_html=True)
     
     card_close()
 
-    # CHARTS - Updated to Interactive Plotly for native hover animations
+    # CHARTS (Consolidated single block to prevent duplication)
     card_open("Weight Visualization", "Charts", "Priority weight distribution across criteria")
+
+    BG   = "#060a0e"
+    SURF = "#0c1420"
+    TEAL = "#2dd4bf"
+    MUT  = "#4a6070"  # Slightly brightened muted text
+    TXT  = "#a7f3d0"  # Brighter text for chart titles
 
     palette = ["#2dd4bf","#0d9488","#0f766e","#134e4a","#115e59",
                "#1d9488","#14b8a6","#5eead4","#99f6e4","#ccfbf1"]
@@ -699,62 +634,56 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
     sorted_criteria = [criteria[i] for i in sorted_idx]
     sorted_cw       = [CW[i]       for i in sorted_idx]
 
-    c1, c2 = st.columns(2)
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5.2), facecolor=BG)
+    fig.subplots_adjust(wspace=0.32)
 
-    # Interactive Bar Chart
-    with c1:
-        fig_bar = go.Figure(data=[
-            go.Bar(
-                x=sorted_criteria,
-                y=sorted_cw,
-                marker_color=[palette[i % len(palette)] for i in range(len(sorted_cw))],
-                marker_line_color="#060a0e",
-                marker_line_width=1.5,
-                text=[f"{w:.4f}" for w in sorted_cw],
-                textposition='outside',
-                textfont=dict(color="#ffffff", size=13, family="JetBrains Mono", weight="bold"),
-                hoverinfo="x+y",
-                hovertemplate="<b>%{x}</b><br>CW: %{y:.4f}<extra></extra>"
-            )
-        ])
-        fig_bar.update_layout(
-            title=dict(text="Criteria Weight (CW)", font=dict(color="#a7f3d0", size=16, family="Space Grotesk")),
-            plot_bgcolor="#0c1420",
-            paper_bgcolor="#060a0e", # Match streamit background
-            font=dict(color="#94a3b8", family="Space Grotesk"),
-            xaxis=dict(showgrid=False, linecolor="#131f2e", tickfont=dict(size=12)),
-            yaxis=dict(showgrid=True, gridcolor="#131f2e", zeroline=False),
-            margin=dict(l=10, r=10, t=50, b=20),
-            hovermode="x unified",
-            height=400
-        )
-        st.plotly_chart(fig_bar, use_container_width=True, config={'displayModeBar': False})
+    # Bar
+    ax1 = axes[0]
+    ax1.set_facecolor(SURF)
+    bc = [palette[i % len(palette)] for i in range(len(sorted_cw))]
+    bars = ax1.bar(sorted_criteria, sorted_cw, color=bc,
+                   edgecolor=BG, linewidth=1.4, width=0.56, zorder=3)
+    ax1.set_title("Criteria Weight (CW)", color=TXT, fontsize=11, fontweight="bold",
+                  pad=15, fontfamily="monospace", loc="left")
+    ax1.set_xlabel("Criteria", color=MUT, fontsize=10, labelpad=9)
+    ax1.set_ylabel("CW",       color=MUT, fontsize=10, labelpad=9)
+    ax1.tick_params(colors=MUT, labelsize=9)
+    for sp in ax1.spines.values():
+        sp.set_color("#131f2e"); sp.set_linewidth(0.5)
+    ax1.grid(axis="y", color="#131f2e", linewidth=0.5, zorder=0)
+    ax1.set_axisbelow(True)
+    
+    # Enhanced Bar chart text (bold and bright)
+    for bar, w in zip(bars, sorted_cw):
+        ax1.text(bar.get_x() + bar.get_width()/2,
+                 bar.get_height() + max(sorted_cw)*0.018,
+                 f"{w:.4f}", ha="center", va="bottom",
+                 color="#ffffff", fontsize=9, fontweight="bold", fontfamily="monospace")
 
-    # Interactive Pie Chart
-    with c2:
-        fig_pie = go.Figure(data=[
-            go.Pie(
-                labels=sorted_criteria,
-                values=sorted_cw,
-                marker=dict(colors=palette, line=dict(color="#060a0e", width=2.5)),
-                textinfo='label+percent',
-                textfont=dict(color="#ffffff", size=13, family="JetBrains Mono"),
-                hoverinfo="label+percent",
-                hovertemplate="<b>%{label}</b><br>Weight: %{percent}<extra></extra>",
-                pull=[0.02] * len(sorted_criteria) # Slight separation for premium look
-            )
-        ])
-        fig_pie.update_layout(
-            title=dict(text="CW Distribution", font=dict(color="#a7f3d0", size=16, family="Space Grotesk")),
-            paper_bgcolor="#060a0e",
-            plot_bgcolor="#060a0e",
-            font=dict(color="#e2e8f0", family="Space Grotesk"),
-            margin=dict(l=10, r=10, t=50, b=20),
-            showlegend=False,
-            height=400
-        )
-        st.plotly_chart(fig_pie, use_container_width=True, config={'displayModeBar': False})
+    # Pie
+    ax2 = axes[1]
+    ax2.set_facecolor(BG)
+    wedges, texts, auts = ax2.pie(
+        sorted_cw, labels=sorted_criteria, autopct="%1.1f%%",
+        colors=palette[:len(sorted_cw)], startangle=140,
+        pctdistance=0.74, # Brought percentages slightly closer to center
+        # Enhanced Pie chart external labels
+        textprops={"color": "#e2e8f0", "fontsize": 10, "fontweight": "500", "fontfamily": "monospace"},
+        wedgeprops={"edgecolor": BG, "linewidth": 2.5}
+    )
+    
+    # Enhanced Pie chart internal percentages (bold white)
+    for at in auts:
+        at.set_color("#ffffff")
+        at.set_fontsize(9.5)
+        at.set_fontweight("bold")
+        
+    ax2.set_title("CW Distribution", color=TXT, fontsize=11, fontweight="bold",
+                  pad=15, fontfamily="monospace", loc="left")
 
+    plt.tight_layout()
+    st.pyplot(fig, use_container_width=True)
+    plt.close(fig)
     card_close()
 
     # RESULT
