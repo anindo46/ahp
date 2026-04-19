@@ -586,25 +586,17 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
     card_close()
 
 # ─────────────────────────── ANIMATED CREDITS ───────────────────────────
-st.markdown("""
+st.markdown('''
 <div style="margin-top:60px;padding:40px 20px;text-align:center;
 border-top:1px solid #0d1824;">
-
-  <!-- Divider -->
-  <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:30px;">
-    <div style="height:1px;width:60px;background:#2dd4bf30;"></div>
-    <div style="width:8px;height:8px;background:#2dd4bf;border-radius:50%;"></div>
-    <div style="height:1px;width:60px;background:#2dd4bf30;"></div>
-  </div>
 
   <!-- Card -->
   <div style="max-width:320px;margin:0 auto;
   background:#0c1420;border-radius:16px;
-  border:1px solid #162030;padding:25px;
-  box-shadow:0 10px 40px rgba(0,0,0,0.4);">
+  border:1px solid #162030;padding:25px;">
 
     <div style="font-size:10px;letter-spacing:3px;
-    color:#2dd4bf;font-family:'JetBrains Mono',monospace;margin-bottom:6px;">
+    color:#2dd4bf;font-family:monospace;margin-bottom:6px;">
     CREATED BY</div>
 
     <div style="font-size:22px;color:#d4e4f0;font-weight:700;">
@@ -621,6 +613,7 @@ border-top:1px solid #0d1824;">
 
   <!-- Links -->
   <div style="margin-top:18px;display:flex;justify-content:center;gap:10px;">
+
     <a href="https://www.linkedin.com/in/anindo046/" target="_blank"
     style="padding:6px 14px;border-radius:20px;background:#061510;
     border:1px solid #2dd4bf20;color:#2dd4bf;font-size:11px;text-decoration:none;">
@@ -630,7 +623,8 @@ border-top:1px solid #0d1824;">
     style="padding:6px 14px;border-radius:20px;background:#090e16;
     border:1px solid #131f2e;color:#2a3f55;font-size:11px;text-decoration:none;">
     🌐 Portfolio</a>
+
   </div>
 
 </div>
-""", unsafe_allow_html=True)
+''', unsafe_allow_html=True)
