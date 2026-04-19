@@ -221,68 +221,45 @@ div[data-testid="stDataFrame"] {
 
 # ─────────────────────────── HEADER ───────────────────────────
 st.markdown("""
-<div style="background:#0c1420;border-bottom:1px solid #131f2e;
-padding:32px 40px 28px 40px;margin-bottom:22px;
-display:flex;align-items:center;gap:32px;">
-
-  <div style="flex-shrink:0;">
-    <svg width="80" height="80" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <style>
-          .h1{fill:none;stroke:#2dd4bf;stroke-width:1.3}
-          .h2{fill:none;stroke:#0d9488;stroke-width:0.7;opacity:.35}
-          .hr{fill:none;stroke:#2dd4bf;stroke-width:0.5}
-          .hd{fill:#2dd4bf}
-          .hl{stroke:#2dd4bf;stroke-width:0.9;opacity:.45;fill:none}
-          .sp1{transform-origin:44px 38px;animation:hexspin 22s linear infinite}
-          .sp2{transform-origin:44px 38px;animation:hexspin 13s linear infinite reverse}
-          .pu{animation:lpulse 3.5s ease-in-out infinite}
-        </style>
-      </defs>
-      <g class="sp1"><polygon class="h1" points="44,6 68,19 68,48 44,62 20,48 20,19"/></g>
-      <g class="sp2"><polygon class="h2" points="44,2 72,17 72,52 44,68 16,52 16,17"/></g>
-      <circle class="hr pu" cx="44" cy="35" r="22"/>
-      <circle class="hr" cx="44" cy="35" r="14" style="animation:lpulse 3.5s 0.8s ease-in-out infinite"/>
-      <line class="hl" x1="44" y1="10" x2="44" y2="54"/>
-      <line class="hl" x1="22" y1="22" x2="66" y2="46"/>
-      <line class="hl" x1="66" y1="22" x2="22" y2="46"/>
-      <circle class="hd" cx="44" cy="10" r="2.8"/>
-      <circle class="hd" cx="22" cy="22" r="2"/>
-      <circle class="hd" cx="66" cy="22" r="2"/>
-      <circle class="hd" cx="44" cy="35" r="4"/>
-      <circle class="hd" cx="22" cy="46" r="2"/>
-      <circle class="hd" cx="66" cy="46" r="2"/>
-      <circle class="hd" cx="44" cy="54" r="2.8"/>
-    </svg>
-  </div>
-
-  <div style="flex:1;">
-    <div style="font-size:10px;font-weight:700;letter-spacing:4px;text-transform:uppercase;
-    color:#2dd4bf;font-family:'JetBrains Mono',monospace;margin-bottom:8px;opacity:0.7;">
-    Multi-Criteria Decision Analysis</div>
-
-    <div style="font-size:40px;font-weight:700;color:#d4e4f0;letter-spacing:-1.5px;
-    line-height:1.08;font-family:'Space Grotesk',sans-serif;">
-    AHP&nbsp;<span style="color:#2dd4bf;">Calculator</span></div>
-
-    <div style="font-size:13px;color:#2a3f55;font-weight:400;margin-top:9px;letter-spacing:0.3px;">
-    Analytic Hierarchy Process &nbsp;·&nbsp; Pairwise Comparison &nbsp;·&nbsp; Consistency Analysis</div>
-
-    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
-      <span style="background:#2dd4bf10;border:1px solid #2dd4bf28;color:#2dd4bf;
-      border-radius:20px;padding:3px 12px;font-size:10px;font-weight:600;
-      font-family:'JetBrains Mono',monospace;letter-spacing:0.5px;">CR &lt; 0.10</span>
-      <span style="background:#131f2e;color:#2a3f55;border-radius:20px;padding:3px 12px;
-      font-size:10px;font-weight:500;font-family:'JetBrains Mono',monospace;">Up to n = 15</span>
-      <span style="background:#131f2e;color:#2a3f55;border-radius:20px;padding:3px 12px;
-      font-size:10px;font-weight:500;font-family:'JetBrains Mono',monospace;">Saaty Scale 1–9</span>
-      <span style="background:#131f2e;color:#2a3f55;border-radius:20px;padding:3px 12px;
-      font-size:10px;font-weight:500;font-family:'JetBrains Mono',monospace;">GIS Ready</span>
-    </div>
-  </div>
-
+<div style="display:flex;justify-content:center;padding:10px 0 20px 0;">
+<svg width="680" viewBox="0 0 680 110" xmlns="http://www.w3.org/2000/svg">
+<defs><style>
+.hex{fill:none;stroke:#80cbc4;stroke-width:1.2}
+.hex2{fill:none;stroke:#26a69a;stroke-width:0.7;opacity:.5}
+.ring{fill:none;stroke:#4db6ac;stroke-width:0.6;opacity:.35}
+.dot{fill:#80cbc4}
+.ln{stroke:#80cbc4;stroke-width:1;opacity:.6;fill:none}
+.s1{transform-origin:55px 42px;animation:spin 18s linear infinite}
+.s2{transform-origin:55px 42px;animation:spin 11s linear infinite reverse}
+.pu{animation:pulse 3s ease-in-out infinite}
+.fi{animation:fadein 1.2s ease both}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:.75}}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style></defs>
+<g class="fi">
+<g class="s1"><polygon class="hex" points="55,5 77,17 77,42 55,54 33,42 33,17"/></g>
+<g class="s2"><polygon class="hex2" points="55,0 82,15 82,50 55,65 28,50 28,15"/></g>
+<circle class="ring pu" cx="55" cy="29" r="22"/>
+<circle class="ring" cx="55" cy="29" r="15" style="animation-delay:.6s"/>
+<line class="ln" x1="55" y1="10" x2="55" y2="50"/>
+<line class="ln" x1="36" y1="20" x2="74" y2="40"/>
+<line class="ln" x1="74" y1="20" x2="36" y2="40"/>
+<circle class="dot" cx="55" cy="10" r="2.5"/>
+<circle class="dot" cx="36" cy="20" r="2"/>
+<circle class="dot" cx="74" cy="20" r="2"/>
+<circle class="dot" cx="55" cy="29" r="3.5"/>
+<circle class="dot" cx="36" cy="40" r="2"/>
+<circle class="dot" cx="74" cy="40" r="2"/>
+<circle class="dot" cx="55" cy="50" r="2.5"/>
+<text x="108" y="38" font-family="IBM Plex Mono,monospace" font-size="34" font-weight="700" letter-spacing="3" fill="#e0f7e9">AHP</text>
+<text x="108" y="60" font-family="IBM Plex Mono,monospace" font-size="34" font-weight="700" letter-spacing="3" fill="#80cbc4">CALCULATOR</text>
+<text x="110" y="80" font-family="IBM Plex Sans,sans-serif" font-size="12" letter-spacing="5" fill="#78909c">ANALYTIC HIERARCHY PROCESS</text>
+</g>
+</svg>
 </div>
 """, unsafe_allow_html=True)
+
 
 # ─────────────────────────── NOTICE ───────────────────────────
 st.markdown("""
@@ -610,91 +587,49 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
 
 # ─────────────────────────── ANIMATED CREDITS ───────────────────────────
 st.markdown("""
-<div style="margin-top:64px;padding:40px 20px 30px;text-align:center;
+<div style="margin-top:60px;padding:40px 20px;text-align:center;
 border-top:1px solid #0d1824;">
 
-  <!-- Decorative divider -->
-  <div style="display:flex;align-items:center;gap:14px;justify-content:center;margin-bottom:34px;">
-    <div style="height:1px;width:56px;background:linear-gradient(90deg,transparent,#2dd4bf35);"></div>
-    <svg width="18" height="18" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg">
-      <polygon points="44,6 70,21 70,51 44,66 18,51 18,21"
-               fill="none" stroke="#2dd4bf" stroke-width="2.5" opacity="0.4">
-        <animateTransform attributeName="transform" type="rotate"
-          from="0 44 44" to="360 44 44" dur="9s" repeatCount="indefinite"/>
-      </polygon>
-      <circle cx="44" cy="37" r="5" fill="#2dd4bf" opacity="0.55"/>
-    </svg>
-    <div style="height:1px;width:56px;background:linear-gradient(90deg,#2dd4bf35,transparent);"></div>
+  <!-- Divider -->
+  <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:30px;">
+    <div style="height:1px;width:60px;background:#2dd4bf30;"></div>
+    <div style="width:8px;height:8px;background:#2dd4bf;border-radius:50%;"></div>
+    <div style="height:1px;width:60px;background:#2dd4bf30;"></div>
   </div>
 
-  <!-- Credit card -->
-  <div style="position:relative;width:300px;height:190px;margin:0 auto 26px auto;
-  background:#0c1420;border-radius:18px;
-  box-shadow:0 8px 36px rgba(0,0,0,0.4),0 0 0 1px #162030;overflow:hidden;">
+  <!-- Card -->
+  <div style="max-width:320px;margin:0 auto;
+  background:#0c1420;border-radius:16px;
+  border:1px solid #162030;padding:25px;
+  box-shadow:0 10px 40px rgba(0,0,0,0.4);">
 
-    <div style="position:absolute;top:0;left:0;right:0;height:1px;
-    background:linear-gradient(90deg,transparent,#2dd4bf28,transparent);"></div>
-    <div style="position:absolute;width:160px;height:160px;
-    background:radial-gradient(circle,#2dd4bf08,transparent);top:-50px;right:-50px;border-radius:50%;"></div>
+    <div style="font-size:10px;letter-spacing:3px;
+    color:#2dd4bf;font-family:'JetBrains Mono',monospace;margin-bottom:6px;">
+    CREATED BY</div>
 
-    <div style="position:absolute;inset:0;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;gap:4px;padding:20px;">
+    <div style="font-size:22px;color:#d4e4f0;font-weight:700;">
+    Anindo Paul</div>
 
-      <div style="font-size:9px;letter-spacing:4px;text-transform:uppercase;
-      color:#2dd4bf;font-family:'JetBrains Mono',monospace;font-weight:700;opacity:0;
-      animation:slideUp 0.55s 0.15s ease both;">Created by</div>
+    <div style="font-size:16px;color:#2dd4bf;margin-bottom:10px;">
+    Sourav</div>
 
-      <div style="font-size:25px;font-weight:700;color:#d4e4f0;letter-spacing:-0.5px;
-      font-family:'Space Grotesk',sans-serif;opacity:0;
-      animation:slideUp 0.55s 0.30s ease both;">Anindo Paul</div>
-
-      <div style="font-size:20px;font-weight:300;color:#2dd4bf;letter-spacing:2px;
-      font-family:'Space Grotesk',sans-serif;opacity:0;
-      animation:slideUp 0.55s 0.44s ease both;">Sourav</div>
-
-      <div style="height:1px;width:50px;background:linear-gradient(90deg,transparent,#2dd4bf40,transparent);
-      margin:5px 0;opacity:0;animation:slideUp 0.55s 0.57s ease both;"></div>
-
-      <div style="font-size:10px;color:#2a3f55;font-family:'JetBrains Mono',monospace;
-      letter-spacing:2px;text-transform:uppercase;opacity:0;
-      animation:slideUp 0.55s 0.70s ease both;">AHP Calculator</div>
-
-      <div style="font-size:10px;color:#162030;font-family:'JetBrains Mono',monospace;
-      letter-spacing:1px;opacity:0;animation:slideUp 0.55s 0.82s ease both;">
-      Free for all users &nbsp;·&nbsp; 2025</div>
-
+    <div style="font-size:10px;color:#2a3f55;">
+    AHP Calculator · 2025
     </div>
-  </div>
 
-  <!-- Pulsing dots -->
-  <div style="display:flex;justify-content:center;gap:7px;margin-bottom:24px;">
-    <div style="width:5px;height:5px;border-radius:50%;background:#2dd4bf;
-    animation:pdot 1.5s 0.0s ease-in-out infinite;"></div>
-    <div style="width:5px;height:5px;border-radius:50%;background:#2dd4bf;
-    animation:pdot 1.5s 0.2s ease-in-out infinite;"></div>
-    <div style="width:5px;height:5px;border-radius:50%;background:#2dd4bf;
-    animation:pdot 1.5s 0.4s ease-in-out infinite;"></div>
   </div>
 
   <!-- Links -->
-  <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
+  <div style="margin-top:18px;display:flex;justify-content:center;gap:10px;">
     <a href="https://www.linkedin.com/in/anindo046/" target="_blank"
-    style="display:inline-flex;align-items:center;gap:6px;background:#061510;
-    border:1px solid #2dd4bf1e;border-radius:20px;padding:7px 16px;
-    font-size:11px;color:#2dd4bf;font-weight:600;text-decoration:none;
-    font-family:'Space Grotesk',sans-serif;letter-spacing:0.3px;">
-    &#128279; LinkedIn</a>
-    <a href="https://anindo46.github.io/portfolio/" target="_blank"
-    style="display:inline-flex;align-items:center;gap:6px;background:#090e16;
-    border:1px solid #131f2e;border-radius:20px;padding:7px 16px;
-    font-size:11px;color:#2a3f55;font-weight:600;text-decoration:none;
-    font-family:'Space Grotesk',sans-serif;letter-spacing:0.3px;">
-    &#127760; Portfolio</a>
-  </div>
+    style="padding:6px 14px;border-radius:20px;background:#061510;
+    border:1px solid #2dd4bf20;color:#2dd4bf;font-size:11px;text-decoration:none;">
+    🔗 LinkedIn</a>
 
-  <div style="font-size:10px;color:#0d1824;font-family:'JetBrains Mono',monospace;
-  letter-spacing:1.5px;padding-bottom:10px;text-transform:uppercase;">
-  Analytic Hierarchy Process &nbsp;·&nbsp; Open Source &nbsp;·&nbsp; 2025
+    <a href="https://anindo46.github.io/portfolio/" target="_blank"
+    style="padding:6px 14px;border-radius:20px;background:#090e16;
+    border:1px solid #131f2e;color:#2a3f55;font-size:11px;text-decoration:none;">
+    🌐 Portfolio</a>
   </div>
 
 </div>
