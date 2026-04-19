@@ -44,40 +44,41 @@ section[data-testid="stSidebar"] * { font-family: 'Space Grotesk', sans-serif !i
 .ahp-sec {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 4px;
+    gap: 12px;
+    margin-bottom: 6px;
 }
 .ahp-sec-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 3px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: #2dd4bf;
-    font-family: 'JetBrains Mono', monospace;
+    color: #f8fafc;
+    font-family: 'Space Grotesk', sans-serif;
 }
 .ahp-sec-line {
     flex: 1;
     height: 1px;
-    background: linear-gradient(90deg, #162030 0%, transparent 100%);
+    background: linear-gradient(90deg, #1e293b 0%, transparent 100%);
 }
 .ahp-sec-badge {
-    font-size: 9px;
-    font-weight: 700;
+    font-size: 10px;
+    font-weight: 600;
     font-family: 'JetBrains Mono', monospace;
     color: #2dd4bf;
-    background: #2dd4bf12;
-    border: 1px solid #2dd4bf25;
+    background: #0f2e2a;
+    border: 1px solid #14b8a6;
     border-radius: 20px;
-    padding: 2px 10px;
+    padding: 3px 12px;
     letter-spacing: 1px;
     text-transform: uppercase;
 }
 .ahp-sec-sub {
-    font-size: 12px;
-    color: #2a3f55;
-    margin-bottom: 16px;
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 18px;
     font-weight: 400;
-    letter-spacing: 0.2px;
+    letter-spacing: 0.3px;
+    font-family: 'Space Grotesk', sans-serif;
 }
 
 /* Notice */
