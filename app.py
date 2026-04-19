@@ -220,60 +220,189 @@ div[data-testid="stDataFrame"] {
 """, unsafe_allow_html=True)
 
 # ─────────────────────────── HEADER ───────────────────────────
+# ─────────────────────────── HEADER ───────────────────────────
 st.markdown("""
-<div style="display:flex;justify-content:center;padding:10px 0 20px 0;">
-<svg width="680" viewBox="0 0 680 110" xmlns="http://www.w3.org/2000/svg">
-<defs><style>
-.hex{fill:none;stroke:#80cbc4;stroke-width:1.2}
-.hex2{fill:none;stroke:#26a69a;stroke-width:0.7;opacity:.5}
-.ring{fill:none;stroke:#4db6ac;stroke-width:0.6;opacity:.35}
-.dot{fill:#80cbc4}
-.ln{stroke:#80cbc4;stroke-width:1;opacity:.6;fill:none}
-.s1{transform-origin:55px 42px;animation:spin 18s linear infinite}
-.s2{transform-origin:55px 42px;animation:spin 11s linear infinite reverse}
-.pu{animation:pulse 3s ease-in-out infinite}
-.fi{animation:fadein 1.2s ease both}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes pulse{0%,100%{opacity:.35}50%{opacity:.75}}
-@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-</style></defs>
-<g class="fi">
-<g class="s1"><polygon class="hex" points="55,5 77,17 77,42 55,54 33,42 33,17"/></g>
-<g class="s2"><polygon class="hex2" points="55,0 82,15 82,50 55,65 28,50 28,15"/></g>
-<circle class="ring pu" cx="55" cy="29" r="22"/>
-<circle class="ring" cx="55" cy="29" r="15" style="animation-delay:.6s"/>
-<line class="ln" x1="55" y1="10" x2="55" y2="50"/>
-<line class="ln" x1="36" y1="20" x2="74" y2="40"/>
-<line class="ln" x1="74" y1="20" x2="36" y2="40"/>
-<circle class="dot" cx="55" cy="10" r="2.5"/>
-<circle class="dot" cx="36" cy="20" r="2"/>
-<circle class="dot" cx="74" cy="20" r="2"/>
-<circle class="dot" cx="55" cy="29" r="3.5"/>
-<circle class="dot" cx="36" cy="40" r="2"/>
-<circle class="dot" cx="74" cy="40" r="2"/>
-<circle class="dot" cx="55" cy="50" r="2.5"/>
-<text x="108" y="38" font-family="IBM Plex Mono,monospace" font-size="34" font-weight="700" letter-spacing="3" fill="#e0f7e9">AHP</text>
-<text x="108" y="60" font-family="IBM Plex Mono,monospace" font-size="34" font-weight="700" letter-spacing="3" fill="#80cbc4">CALCULATOR</text>
-<text x="110" y="80" font-family="IBM Plex Sans,sans-serif" font-size="12" letter-spacing="5" fill="#78909c">ANALYTIC HIERARCHY PROCESS</text>
-</g>
-</svg>
+<style>
+/* Header Container */
+.premium-header-wrapper {
+    position: relative;
+    margin-top: -20px;
+    margin-bottom: 25px;
+    padding: 40px 30px;
+    background: linear-gradient(180deg, rgba(12, 20, 32, 0.8) 0%, rgba(6, 10, 14, 0) 100%);
+    border-bottom: 1px solid rgba(45, 212, 191, 0.1);
+    border-radius: 0 0 24px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    animation: fadeSlideDown 0.8s ease-out forwards;
+}
+
+/* Background Ambient Glow */
+.header-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(ellipse at center, rgba(45, 212, 191, 0.08) 0%, transparent 60%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    animation: pulseGlow 6s ease-in-out infinite alternate;
+}
+
+/* Layout Flexbox */
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 35px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Glassmorphism Icon Box */
+.header-icon-box {
+    width: 110px;
+    height: 110px;
+    background: rgba(12, 20, 32, 0.5);
+    border: 1px solid rgba(45, 212, 191, 0.2);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(45, 212, 191, 0.05);
+    backdrop-filter: blur(10px);
+    animation: floatIcon 4s ease-in-out infinite;
+}
+
+/* Typography */
+.header-text-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.ph-badge {
+    align-self: flex-start;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: #2dd4bf;
+    background: rgba(45, 212, 191, 0.1);
+    border: 1px solid rgba(45, 212, 191, 0.25);
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+}
+
+.ph-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 42px;
+    font-weight: 800;
+    margin: 0;
+    line-height: 1.1;
+    background: linear-gradient(90deg, #ffffff, #2dd4bf, #80cbc4, #ffffff);
+    background-size: 200% auto;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: gradientTextShine 4s linear infinite;
+    letter-spacing: -1px;
+}
+
+.ph-subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #6a8a9a;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin: 8px 0 0 0;
+    font-weight: 500;
+}
+
+/* Animations */
+@keyframes fadeSlideDown {
+    0% { opacity: 0; transform: translateY(-30px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes floatIcon {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(2deg); }
+}
+@keyframes pulseGlow {
+    0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.9); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+}
+@keyframes gradientTextShine {
+    to { background-position: 200% center; }
+}
+
+/* SVG specific animations */
+.svg-node { transform-origin: center; animation: pulseNode 2s infinite alternate; }
+.svg-line { stroke-dasharray: 60; stroke-dashoffset: 60; animation: drawLine 3s ease-in-out infinite alternate; }
+@keyframes pulseNode {
+    0% { filter: drop-shadow(0 0 2px #2dd4bf); transform: scale(1); }
+    100% { filter: drop-shadow(0 0 8px #2dd4bf); transform: scale(1.15); }
+}
+@keyframes drawLine {
+    0% { stroke-dashoffset: 60; }
+    100% { stroke-dashoffset: 0; }
+}
+
+/* Responsive adjustment */
+@media (max-width: 768px) {
+    .header-content { flex-direction: column; text-align: center; gap: 20px; }
+    .ph-badge { align-self: center; }
+    .ph-title { font-size: 32px; }
+}
+</style>
+
+<div class="premium-header-wrapper">
+    <div class="header-glow"></div>
+    <div class="header-content">
+        
+        <div class="header-icon-box">
+            <!-- Animated Hierarchy SVG -->
+            <svg width="65" height="65" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0.8"/>
+                        <stop offset="100%" stop-color="#0284c7" stop-opacity="0.2"/>
+                    </linearGradient>
+                </defs>
+                <!-- Connections -->
+                <path d="M 50 25 L 20 70" stroke="url(#lineGrad)" stroke-width="3" stroke-linecap="round" fill="none" class="svg-line" style="animation-delay: 0s;"/>
+                <path d="M 50 25 L 50 70" stroke="url(#lineGrad)" stroke-width="3" stroke-linecap="round" fill="none" class="svg-line" style="animation-delay: 0.2s;"/>
+                <path d="M 50 25 L 80 70" stroke="url(#lineGrad)" stroke-width="3" stroke-linecap="round" fill="none" class="svg-line" style="animation-delay: 0.4s;"/>
+                
+                <!-- Main Node (Goal) -->
+                <circle cx="50" cy="22" r="9" fill="#a7f3d0" class="svg-node" style="animation-delay: 0s;"/>
+                <circle cx="50" cy="22" r="4" fill="#060a0e" />
+                
+                <!-- Sub Nodes (Criteria) -->
+                <circle cx="20" cy="73" r="7" fill="#2dd4bf" class="svg-node" style="animation-delay: 0.5s;"/>
+                <circle cx="20" cy="73" r="3" fill="#060a0e" />
+                
+                <circle cx="50" cy="73" r="7" fill="#2dd4bf" class="svg-node" style="animation-delay: 0.7s;"/>
+                <circle cx="50" cy="73" r="3" fill="#060a0e" />
+                
+                <circle cx="80" cy="73" r="7" fill="#2dd4bf" class="svg-node" style="animation-delay: 0.9s;"/>
+                <circle cx="80" cy="73" r="3" fill="#060a0e" />
+            </svg>
+        </div>
+
+        <div class="header-text-box">
+            <div class="ph-badge">Decision Support System</div>
+            <h1 class="ph-title">AHP CALCULATOR</h1>
+            <p class="ph-subtitle">Analytic Hierarchy Process</p>
+        </div>
+        
+    </div>
 </div>
 """, unsafe_allow_html=True)
-
-
-# ─────────────────────────── NOTICE ───────────────────────────
-st.markdown("""
-<div class="ahp-card">
-  <div class="ahp-notice">
-    <span style="color:#2dd4bf;font-weight:600;">How to use —</span>
-    Enter your criteria names separated by commas in the sidebar.
-    Fill only the <span style="color:#c8d8e8;font-weight:500;">upper-triangle</span> cells using the Saaty scale (1–9).
-    The diagonal is fixed at 1 and lower-triangle reciprocals are computed automatically.
-    A <span style="color:#c8d8e8;font-weight:500;">Consistency Ratio CR &lt; 0.10</span> confirms acceptable judgement consistency.
-  </div>
-</div>
-""", unsafe_allow_html=True)
-
 # ─────────────────────────── SIDEBAR ───────────────────────────
 st.sidebar.markdown("""
 <div style="padding:20px 4px 4px 4px;">
