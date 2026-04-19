@@ -85,6 +85,110 @@ div[data-testid="stDataFrame"] {
     border-top:1px solid rgba(255,255,255,0.05);
     color:#6b7280;
 }
+.metric-pro {
+    background: linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 18px;
+    padding: 22px 18px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: all 0.25s ease;
+}
+.metric-pro:hover {
+    transform: translateY(-3px);
+    border-color: rgba(52,211,153,0.3);
+}
+.metric-title {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #6b7280;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 8px;
+}
+.metric-value-big {
+    font-size: 26px;
+    font-weight: 700;
+    color: #e5fff5;
+    font-family: 'JetBrains Mono', monospace;
+}
+.metric-sub {
+    font-size: 11px;
+    color: #6b7280;
+    margin-top: 6px;
+}
+.highlight {
+    background: linear-gradient(145deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05));
+    border: 1px solid rgba(16,185,129,0.35);
+    box-shadow: 0 0 25px rgba(16,185,129,0.15);
+}
+.cr-good { color: #34d399; }
+.cr-bad { color: #f87171; }
+
+/* ───────── PREMIUM NOTICE CARD ───────── */
+.notice-pro {
+    position: relative;
+    background: linear-gradient(145deg, rgba(16,185,129,0.08), rgba(16,185,129,0.02));
+    border: 1px solid rgba(16,185,129,0.25);
+    border-radius: 18px;
+    padding: 20px 22px;
+    margin-bottom: 22px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    transition: all 0.25s ease;
+}
+
+/* subtle glow layer */
+.notice-pro::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(16,185,129,0.15), transparent 60%);
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* hover lift */
+.notice-pro:hover {
+    transform: translateY(-2px);
+    border-color: rgba(52,211,153,0.4);
+    box-shadow: 0 10px 35px rgba(16,185,129,0.15);
+}
+
+/* header */
+.notice-head {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #34d399;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 12px;
+}
+
+/* body text */
+.notice-body {
+    font-size: 13.5px;
+    color: #d1fae5;
+    line-height: 1.7;
+}
+
+/* highlight rule */
+.cr-rule {
+    display: inline-block;
+    background: rgba(16,185,129,0.15);
+    padding: 4px 10px;
+    border-radius: 8px;
+    color: #34d399;
+    font-weight: 600;
+    margin-top: 6px;
+}
+
+/* bullet styling */
+.notice-point {
+    margin-top: 6px;
+    color: #a7f3d0;
+}
+
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -131,11 +235,28 @@ st.markdown("""
 
 # ─────────────────────────── NOTICE ───────────────────────────
 st.markdown("""
-<div class='card'>
-<div class='notice'>
-📌 <b>Instructions:</b> Enter criteria separated by commas. Fill upper-triangle values using Saaty scale (1–9).
-Diagonal is automatically set to 1, and reciprocals are auto-filled. A <b>CR &lt; 0.10</b> indicates acceptable consistency.
-</div></div>
+<div class="notice-pro">
+
+  <div class="notice-head">
+    ⚡ HOW TO USE
+  </div>
+
+  <div class="notice-body">
+
+    Enter your <b>criteria</b> in the sidebar, separated by commas.
+
+    <div class="notice-point">• Fill only the <b>upper triangle</b> using Saaty scale (1–9)</div>
+    <div class="notice-point">• Diagonal is fixed at <b>1</b></div>
+    <div class="notice-point">• Lower triangle is <b>auto-calculated (reciprocal)</b></div>
+
+    <br>
+
+    Your results are valid only if:<br>
+    <span class="cr-rule">CR &lt; 0.10</span>
+
+  </div>
+
+</div>
 """, unsafe_allow_html=True)
 
 # ─────────────────────────── SIDEBAR ───────────────────────────
