@@ -620,22 +620,7 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
     fig, axes = plt.subplots(1, 2, figsize=(14, 5.2), facecolor=BG)
     fig.subplots_adjust(wspace=0.32)
 
-    # Bar
-    ax1 = axes[0]
-    ax1.set_facecolor(SURF)
-    bc = [palette[i % len(palette)] for i in range(len(sorted_cw))]
-    bars = ax1.bar(sorted_criteria, sorted_cw, color=bc,
-                   edgecolor=BG, linewidth=1.4, width=0.56, zorder=3)
-    ax1.set_title("Criteria Weight (CW)", color=TXT, fontsize=11, fontweight="bold",
-                  pad=15, fontfamily="monospace", loc="left")
-    ax1.set_xlabel("Criteria", color=MUT, fontsize=10, labelpad=9)
-    ax1.set_ylabel("CW",       color=MUT, fontsize=10, labelpad=9)
-    ax1.tick_params(colors=MUT, labelsize=9)
-    for sp in ax1.spines.values():
-        sp.set_color("#131f2e"); sp.set_linewidth(0.5)
-    ax1.grid(axis="y", color="#131f2e", linewidth=0.5, zorder=0)
-    ax1.set_axisbelow(True)
-    
+
     # Enhanced Bar chart text (bold and bright)
     for bar, w in zip(bars, sorted_cw):
         ax1.text(bar.get_x() + bar.get_width()/2,
@@ -643,18 +628,6 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
                  f"{w:.4f}", ha="center", va="bottom",
                  color="#ffffff", fontsize=9, fontweight="bold", fontfamily="monospace")
 
-    # Pie
-    ax2 = axes[1]
-    ax2.set_facecolor(BG)
-    wedges, texts, auts = ax2.pie(
-        sorted_cw, labels=sorted_criteria, autopct="%1.1f%%",
-        colors=palette[:len(sorted_cw)], startangle=140,
-        pctdistance=0.74, # Brought percentages slightly closer to center
-        # Enhanced Pie chart external labels
-        textprops={"color": "#e2e8f0", "fontsize": 10, "fontweight": "500", "fontfamily": "monospace"},
-        wedgeprops={"edgecolor": BG, "linewidth": 2.5}
-    )
-    
     # Enhanced Pie chart internal percentages (bold white)
     for at in auts:
         at.set_color("#ffffff")
