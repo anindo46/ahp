@@ -382,7 +382,7 @@ font-weight:600;letter-spacing:0.5px;">n = {n} &nbsp;criteria detected</span>
 """, unsafe_allow_html=True)
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### ðﾟﾓﾐ AHP Formulas")
+st.sidebar.markdown("### 📐 AHP Formulas")
 for label, formula in [
     ("Step 1 · Normalize columns",      r"\bar{a}_{ij} = \frac{a_{ij}}{\sum_{k=1}^{n} a_{kj}}"),
     ("Step 2 · Average / Weight",       r"W_i = \frac{1}{n} \sum_{j=1}^{n} \bar{a}_{ij}"),
@@ -410,7 +410,7 @@ RI_dict = {
    11: 1.51,12: 1.48,13: 1.56,14: 1.57, 15: 1.59
 }
 
-st.sidebar.markdown("### ðﾟﾓﾊ Random Index (RI)")
+st.sidebar.markdown("### 📊 Random Index (RI)")
 ri_df = pd.DataFrame(list(RI_dict.items()), columns=["n", "RI"])
 st.sidebar.dataframe(ri_df, use_container_width=True, hide_index=True)
 st.sidebar.markdown(f"""
@@ -421,7 +421,7 @@ n = {n} &nbsp;&#8594;&nbsp; RI = {RI_dict.get(n, 1.59)}</div>
 """, unsafe_allow_html=True)
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### ðﾟﾔﾢ Saaty Scale")
+st.sidebar.markdown("### 🔢 Saaty Scale")
 saaty_df = pd.DataFrame({
     "Val":     [1,2,3,4,5,6,7,8,9],
     "Meaning": ["Equal","Weak","Moderate","Mod+","Strong",
@@ -612,7 +612,7 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
     
     st.markdown("""
     <div style="background:#061510; border:1px solid #131f2e; border-left:3px solid #2dd4bf; padding:14px 18px; border-radius:8px; margin-top:16px;">
-        <div style="color:#2dd4bf; font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">ðﾟﾗﾺ️ GIS Application Ready</div>
+        <div style="color:#2dd4bf; font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">🗺️ GIS Application Ready</div>
         <div style="color:#8a9fae; font-size:12px; line-height:1.6;">Input the <b style="color:#c8d8e8;">Criteria CW</b> values into your spatial analysis tool (e.g., ArcGIS Weighted Overlay, QGIS Raster Calculator) to generate your suitability map. Ensure all input raster layers are reclassified to a common scale before multiplying by these weights.</div>
     </div>
     """, unsafe_allow_html=True)
