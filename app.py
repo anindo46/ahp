@@ -8,76 +8,83 @@ st.set_page_config(page_title="AHP Calculator", layout="wide")
 # ─────────────────────────── STYLE ───────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
 
-html, body, [class*="css"] { font-family: 'IBM Plex Sans', sans-serif; }
-.stApp { background: #0f1117; }
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif;
+}
 
-.title {
-    text-align: center;
-    font-size: 38px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: #e0f7e9;
-    padding: 18px 0 4px 0;
-    font-family: 'IBM Plex Mono', monospace;
+.stApp {
+    background: radial-gradient(circle at 20% 20%, #0b0f14, #030507);
 }
-.subtitle {
-    text-align: center;
-    font-size: 13px;
-    color: #78909c;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    margin-bottom: 28px;
+
+/* Smooth animation */
+@keyframes fadeUp {
+    from {opacity:0; transform:translateY(10px);}
+    to {opacity:1; transform:translateY(0);}
 }
-.card {
-    background: rgba(255,255,255,0.03);
-    padding: 22px 26px;
-    border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.07);
+
+/* Premium glass card */
+.card, .ahp-card {
+    background: rgba(255,255,255,0.025);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 24px;
     margin-bottom: 22px;
+    animation: fadeUp 0.35s ease;
 }
-.section-title {
-    font-size: 15px;
-    font-weight: 700;
+
+/* Section headers */
+.section-title, .ahp-sec-label {
+    font-family: 'JetBrains Mono', monospace;
+    color: #34d399;
     letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #80cbc4;
-    margin-bottom: 14px;
-    font-family: 'IBM Plex Mono', monospace;
-    border-bottom: 1px solid rgba(128,203,196,0.2);
-    padding-bottom: 8px;
+    font-size: 12px;
 }
-.notice {
-    background: rgba(0,200,83,0.07);
-    padding: 14px 18px;
-    border-left: 4px solid #00c853;
-    border-radius: 8px;
-    font-size: 13px;
-    color: #b2dfdb;
+
+/* Buttons */
+.stButton > button {
+    background: linear-gradient(135deg, #065f46, #10b981);
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all 0.2s ease;
 }
-.cr-ok   { color: #69f0ae; font-weight: 700; font-size: 16px; }
-.cr-fail { color: #ff5252; font-weight: 700; font-size: 16px; }
-.metric-box {
-    background: rgba(255,255,255,0.04);
-    border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.08);
-    padding: 14px;
-    text-align: center;
+.stButton > button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16,185,129,0.3);
 }
-.metric-label { font-size: 11px; color: #78909c; letter-spacing: 2px; text-transform: uppercase; }
-.metric-value { font-size: 26px; font-weight: 700; color: #e0f7e9; font-family: 'IBM Plex Mono', monospace; }
+
+/* Inputs */
+input {
+    background:#020406 !important;
+    border:1px solid #1f2937 !important;
+    color:#d1fae5 !important;
+}
+
+/* Dataframe */
+div[data-testid="stDataFrame"] {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Metrics */
+.ahp-metric, .metric-box {
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Footer */
 .footer {
-    text-align: center;
-    padding: 30px;
-    margin-top: 40px;
-    color: #546e7a;
-    font-size: 13px;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    text-align:center;
+    padding:40px;
+    border-top:1px solid rgba(255,255,255,0.05);
+    color:#6b7280;
 }
-.footer a { color: #80cbc4; text-decoration: none; }
-div[data-testid="stDataFrame"] { border-radius: 8px; overflow: hidden; }
-section[data-testid="stSidebar"] { background: #0d1117; border-right: 1px solid rgba(255,255,255,0.06); }
 </style>
 """, unsafe_allow_html=True)
 
