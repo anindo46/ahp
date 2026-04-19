@@ -381,7 +381,7 @@ n = {n} criteria detected</span>
 """, unsafe_allow_html=True)
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### 📐 AHP Formulas")
+st.sidebar.markdown("### ðﾟﾓﾐ AHP Formulas")
 st.sidebar.markdown("**Step 1 · Normalize columns**")
 st.sidebar.latex(r"\bar{a}_{ij} = \frac{a_{ij}}{\sum_{k=1}^{n} a_{kj}}")
 st.sidebar.markdown("**Step 2 · Average / Weight**")
@@ -412,7 +412,7 @@ RI_dict = {
    11: 1.51,12: 1.48,13: 1.56,14: 1.57, 15: 1.59
 }
 
-st.sidebar.markdown("### 📊 Random Index (RI)")
+st.sidebar.markdown("### ðﾟﾓﾊ Random Index (RI)")
 ri_df = pd.DataFrame(list(RI_dict.items()), columns=["n", "RI"])
 st.sidebar.dataframe(ri_df, use_container_width=True, hide_index=True)
 st.sidebar.markdown(f"""
@@ -422,7 +422,7 @@ n={n} → RI = {RI_dict.get(n, 1.59)}</div>
 """, unsafe_allow_html=True)
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### 🔢 Saaty Scale")
+st.sidebar.markdown("### ðﾟﾔﾢ Saaty Scale")
 saaty_df = pd.DataFrame({
     "Val":  [1,2,3,4,5,6,7,8,9],
     "Meaning": ["Equal","Weak","Moderate","Mod+","Strong","Strong+","V.Strong","V.V.Strong","Extreme"],
@@ -778,13 +778,13 @@ st.markdown("""
     border:1px solid #d1fae5;border-radius:20px;padding:7px 16px;
     font-size:12px;color:#00897b;font-weight:600;text-decoration:none;
     font-family:Inter,sans-serif;transition:all 0.15s;">
-    🔗 LinkedIn</a>
+    ðﾟﾔﾗ LinkedIn</a>
     <a href="https://anindo46.github.io/portfolio/" target="_blank"
     style="display:inline-flex;align-items:center;gap:6px;background:#f2f2f7;
     border:1px solid #e5e5ea;border-radius:20px;padding:7px 16px;
     font-size:12px;color:#636366;font-weight:600;text-decoration:none;
     font-family:Inter,sans-serif;transition:all 0.15s;">
-    🌐 Portfolio</a>
+    ðﾟﾌﾐ Portfolio</a>
 </div>
 
 <div style="font-size:11px;color:#c7c7cc;font-family:JetBrains Mono,monospace;
