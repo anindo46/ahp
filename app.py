@@ -6,70 +6,69 @@ import matplotlib.ticker as ticker
 
 st.set_page_config(page_title="AHP Calculator", layout="wide")
 
-# ─────────────────────────── PREMIUM LIGHT STYLE ───────────────────────────
+# ─────────────────────────── PREMIUM STYLE ───────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;600&display=swap');
 
 html, body, [class*="css"] {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
 }
 
-/* ── Base: iPhone warm white ── */
+/* ── Base ── */
 .stApp {
-    background: #f2f2f7;
-}
-
-/* ── Main content area ── */
-.main .block-container {
-    padding-top: 0 !important;
-    max-width: 1100px;
+    background: #080c10;
 }
 
 /* ── Sidebar ── */
 section[data-testid="stSidebar"] {
-    background: #ffffff !important;
-    border-right: 1px solid #e5e5ea !important;
-    box-shadow: 2px 0 12px rgba(0,0,0,0.04) !important;
+    background: #0b0f14 !important;
+    border-right: 1px solid #1a2332 !important;
 }
 section[data-testid="stSidebar"] * {
-    font-family: 'Inter', sans-serif !important;
-}
-section[data-testid="stSidebar"] .stMarkdown h2,
-section[data-testid="stSidebar"] .stMarkdown h3 {
-    font-size: 11px !important;
-    letter-spacing: 2px !important;
-    text-transform: uppercase !important;
-    color: #8e8e93 !important;
-    font-weight: 600 !important;
-    padding-bottom: 8px !important;
-    border-bottom: 1px solid #f2f2f7 !important;
+    font-family: 'Space Grotesk', sans-serif !important;
 }
 
-/* ── Cards: iOS card style ── */
+/* ── Cards ── */
 .card {
-    background: #ffffff;
-    padding: 24px 28px;
-    border-radius: 18px;
-    border: none;
-    margin-bottom: 16px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    background: linear-gradient(135deg, #0e1520 0%, #0a1018 100%);
+    padding: 28px 32px;
+    border-radius: 16px;
+    border: 1px solid #1e2d42;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #2dd4bf44, transparent);
 }
 
 /* ── Section titles ── */
 .section-title {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.5px;
-    color: #1c1c1e;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #2dd4bf;
     margin-bottom: 4px;
+    font-family: 'JetBrains Mono', monospace;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+}
+.section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, #1e3a4a, transparent);
 }
 .section-sub {
     font-size: 12px;
-    color: #8e8e93;
+    color: #334155;
     margin-bottom: 18px;
     font-weight: 400;
 }
@@ -77,8 +76,9 @@ section[data-testid="stSidebar"] .stMarkdown h3 {
 /* ── Tag badge ── */
 .tag {
     display: inline-block;
-    background: #e8f5f3;
-    color: #00897b;
+    background: #2dd4bf11;
+    border: 1px solid #2dd4bf33;
+    color: #2dd4bf;
     border-radius: 20px;
     padding: 2px 10px;
     font-size: 10px;
@@ -88,31 +88,38 @@ section[data-testid="stSidebar"] .stMarkdown h3 {
     text-transform: uppercase;
 }
 
-/* ── Notice ── */
+/* ── Notice banner ── */
 .notice {
-    background: #f0fdf9;
-    padding: 14px 18px;
-    border-left: 3px solid #00c896;
-    border-radius: 0 12px 12px 0;
+    background: #071a14;
+    padding: 16px 20px;
+    border-left: 3px solid #2dd4bf;
+    border-radius: 0 10px 10px 0;
     font-size: 13px;
-    color: #3d7a70;
+    color: #94a3b8;
     line-height: 1.6;
 }
-.notice b { color: #1c1c1e; }
+.notice b { color: #e2e8f0; }
 
 /* ── Metric boxes ── */
 .metric-box {
-    background: #f2f2f7;
-    border-radius: 16px;
-    border: none;
-    padding: 20px 14px;
+    background: #0b1520;
+    border-radius: 14px;
+    border: 1px solid #1e2d42;
+    padding: 20px 16px;
     text-align: center;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+}
+.metric-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #2dd4bf08, transparent);
 }
 .metric-label {
     font-size: 10px;
-    color: #8e8e93;
-    letter-spacing: 1.5px;
+    color: #475569;
+    letter-spacing: 3px;
     text-transform: uppercase;
     font-family: 'JetBrains Mono', monospace;
     margin-bottom: 8px;
@@ -120,133 +127,87 @@ section[data-testid="stSidebar"] .stMarkdown h3 {
 .metric-value {
     font-size: 22px;
     font-weight: 700;
-    color: #1c1c1e;
+    color: #e2e8f0;
     font-family: 'JetBrains Mono', monospace;
     letter-spacing: -0.5px;
 }
-.metric-value.cr-ok   { color: #00897b; }
-.metric-value.cr-fail { color: #ff3b30; }
+.metric-value.cr-ok   { color: #2dd4bf; }
+.metric-value.cr-fail { color: #f87171; }
 .metric-verdict {
     font-size: 11px;
-    color: #8e8e93;
-    margin-top: 5px;
+    color: #475569;
+    margin-top: 6px;
     font-family: 'JetBrains Mono', monospace;
 }
 
 /* ── Run button ── */
 .stButton > button {
-    background: linear-gradient(135deg, #00c896 0%, #00897b 100%) !important;
-    color: #ffffff !important;
-    border: none !important;
-    border-radius: 14px !important;
-    font-family: 'Inter', sans-serif !important;
-    font-size: 14px !important;
+    background: linear-gradient(135deg, #134e4a, #0f766e) !important;
+    color: #ccfbf1 !important;
+    border: 1px solid #2dd4bf44 !important;
+    border-radius: 12px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 13px !important;
     font-weight: 600 !important;
-    letter-spacing: 0.5px !important;
-    padding: 16px 0 !important;
-    box-shadow: 0 4px 20px rgba(0,200,150,0.28) !important;
-    transition: all 0.18s ease !important;
+    letter-spacing: 2px !important;
+    padding: 14px 0 !important;
+    text-transform: uppercase !important;
+    transition: all 0.2s !important;
 }
 .stButton > button:hover {
-    box-shadow: 0 6px 28px rgba(0,200,150,0.38) !important;
+    background: linear-gradient(135deg, #0f766e, #0d9488) !important;
+    border-color: #2dd4bf88 !important;
     transform: translateY(-1px) !important;
 }
-.stButton > button:active {
-    transform: translateY(0) !important;
+
+/* ── Dataframe ── */
+div[data-testid="stDataFrame"] {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #1e2d42 !important;
 }
 
-/* ── Inputs ── */
+/* ── Number inputs ── */
 div[data-testid="stNumberInput"] input {
-    background: #f9f9f9 !important;
-    border: 1px solid #e5e5ea !important;
-    border-radius: 10px !important;
-    color: #1c1c1e !important;
+    background: #0b1520 !important;
+    border: 1px solid #1e2d42 !important;
+    border-radius: 8px !important;
+    color: #e2e8f0 !important;
     font-family: 'JetBrains Mono', monospace !important;
     font-size: 13px !important;
     text-align: center !important;
 }
 div[data-testid="stNumberInput"] input:focus {
-    border-color: #00c896 !important;
-    box-shadow: 0 0 0 3px rgba(0,200,150,0.12) !important;
-}
-
-/* ── Dataframe ── */
-div[data-testid="stDataFrame"] {
-    border-radius: 12px !important;
-    overflow: hidden;
-    border: 1px solid #e5e5ea !important;
+    border-color: #2dd4bf66 !important;
+    box-shadow: 0 0 0 2px #2dd4bf11 !important;
 }
 
 /* ── Caption ── */
 .stCaption {
-    color: #aeaeb2 !important;
+    color: #334155 !important;
     font-size: 11px !important;
     font-family: 'JetBrains Mono', monospace !important;
+    letter-spacing: 0.5px !important;
 }
 
 /* ── Diagonal cell ── */
 .diag-cell {
     text-align: center;
-    padding: 7px 4px;
-    background: #e8f5f3;
-    border-radius: 8px;
-    color: #00897b;
-    font-weight: 700;
+    padding: 6px 4px;
+    background: #2dd4bf0d;
+    border-radius: 6px;
+    color: #2dd4bf;
+    font-weight: 600;
     font-family: 'JetBrains Mono', monospace;
     font-size: 13px;
+    border: 1px solid #2dd4bf22;
 }
 .recip-cell {
     text-align: center;
-    padding: 7px 4px;
-    color: #aeaeb2;
+    padding: 6px 4px;
+    color: #334155;
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
-}
-
-/* ── Info strip ── */
-.info-strip {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-.info-pill {
-    background: #f2f2f7;
-    border-radius: 20px;
-    padding: 4px 14px;
-    font-size: 11px;
-    color: #636366;
-    font-family: 'JetBrains Mono', monospace;
-}
-
-/* ── Sidebar accent ── */
-.sb-formula-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: #00897b;
-    font-family: 'JetBrains Mono', monospace;
-    margin: 12px 0 2px 0;
-}
-
-/* ── Credits animation ── */
-@keyframes scrollCredits {
-    0%   { transform: translateY(100%); opacity: 0; }
-    8%   { opacity: 1; }
-    92%  { opacity: 1; }
-    100% { transform: translateY(-100%); opacity: 0; }
-}
-@keyframes fadeInCredit {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes shimmer {
-    0%   { background-position: -400px 0; }
-    100% { background-position: 400px 0; }
-}
-@keyframes pulse-dot {
-    0%, 100% { opacity: 0.3; transform: scale(1); }
-    50%       { opacity: 1;   transform: scale(1.4); }
 }
 
 /* ── Footer ── */
@@ -254,7 +215,21 @@ div[data-testid="stDataFrame"] {
     margin-top: 60px;
     padding: 40px 20px 20px;
     text-align: center;
-    border-top: 1px solid #e5e5ea;
+    border-top: 1px solid #0f1f2e;
+}
+
+/* ── Credits animations ── */
+@keyframes slideUp {
+    from { opacity:0; transform: translateY(14px); }
+    to   { opacity:1; transform: translateY(0); }
+}
+@keyframes creditFade {
+    from { opacity:0; }
+    to   { opacity:1; }
+}
+@keyframes pdot {
+    0%, 100% { opacity:0.2;  transform:scale(0.85); }
+    50%       { opacity:1;   transform:scale(1.35); }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -262,11 +237,11 @@ div[data-testid="stDataFrame"] {
 # ─────────────────────────── HEADER ───────────────────────────
 st.markdown("""
 <div style="
-    background: linear-gradient(160deg, #ffffff 0%, #f0fdf9 60%, #e6f9f4 100%);
+    background: linear-gradient(160deg, #0e1520 0%, #0a1a14 60%, #071a14 100%);
     border-radius: 0 0 28px 28px;
     padding: 36px 40px 32px 40px;
     margin-bottom: 24px;
-    box-shadow: 0 2px 20px rgba(0,200,150,0.08);
+    border-bottom: 1px solid #1e2d42;
     display: flex;
     align-items: center;
     gap: 36px;
@@ -276,31 +251,35 @@ st.markdown("""
 <div style="flex-shrink:0;">
 <svg width="88" height="88" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg">
 <defs><style>
-.lhex{fill:none;stroke:#00897b;stroke-width:1.4}
-.lhex2{fill:none;stroke:#00c896;stroke-width:0.8;opacity:.4}
-.lring{fill:none;stroke:#00c896;stroke-width:0.6;opacity:.2}
-.ldot{fill:#00897b}
-.lln{stroke:#00c896;stroke-width:1;opacity:.5;fill:none}
-.ls1{transform-origin:44px 44px;animation:lspin 20s linear infinite}
-.ls2{transform-origin:44px 44px;animation:lspin 12s linear infinite reverse}
+.lhex{fill:none;stroke:#2dd4bf;stroke-width:1.4}
+.lhex2{fill:none;stroke:#0d9488;stroke-width:0.8;opacity:.4}
+.lring{fill:none;stroke:#2dd4bf;stroke-width:0.6;opacity:.2}
+.ldot{fill:#2dd4bf}
+.lln{stroke:#2dd4bf;stroke-width:1;opacity:.5;fill:none}
 .lpu{animation:lpulse 3s ease-in-out infinite}
-@keyframes lspin{to{transform:rotate(360deg)}}
-@keyframes lpulse{0%,100%{opacity:.15}50%{opacity:.45}}
+@keyframes lpulse{0%,100%{opacity:.15}50%{opacity:.5}}
 </style></defs>
-<g class="ls1"><polygon class="lhex" points="44,6 70,21 70,51 44,66 18,51 18,21"/></g>
-<g class="ls2"><polygon class="lhex2" points="44,2 74,19 74,55 44,72 14,55 14,19"/></g>
-<circle class="lring lpu" cx="44" cy="38" r="26"/>
-<circle class="lring" cx="44" cy="38" r="18" style="animation-delay:.7s"/>
-<line class="lln" x1="44" y1="12" x2="44" y2="58"/>
-<line class="lln" x1="22" y1="24" x2="66" y2="48"/>
-<line class="lln" x1="66" y1="24" x2="22" y2="48"/>
-<circle class="ldot" cx="44" cy="12" r="3"/>
-<circle class="ldot" cx="22" cy="24" r="2.2"/>
-<circle class="ldot" cx="66" cy="24" r="2.2"/>
-<circle class="ldot" cx="44" cy="38" r="4.5"/>
-<circle class="ldot" cx="22" cy="48" r="2.2"/>
-<circle class="ldot" cx="66" cy="48" r="2.2"/>
-<circle class="ldot" cx="44" cy="58" r="3"/>
+<g>
+  <g style="transform-origin:44px 44px;animation:lspin 20s linear infinite">
+    <polygon class="lhex" points="44,6 70,21 70,51 44,66 18,51 18,21"/>
+  </g>
+  <g style="transform-origin:44px 44px;animation:lspin 12s linear infinite reverse">
+    <polygon class="lhex2" points="44,2 74,19 74,55 44,72 14,55 14,19"/>
+  </g>
+  <circle class="lring lpu" cx="44" cy="38" r="26"/>
+  <circle class="lring" cx="44" cy="38" r="18" style="animation-delay:.7s"/>
+  <line class="lln" x1="44" y1="12" x2="44" y2="58"/>
+  <line class="lln" x1="22" y1="24" x2="66" y2="48"/>
+  <line class="lln" x1="66" y1="24" x2="22" y2="48"/>
+  <circle class="ldot" cx="44" cy="12" r="3"/>
+  <circle class="ldot" cx="22" cy="24" r="2.2"/>
+  <circle class="ldot" cx="66" cy="24" r="2.2"/>
+  <circle class="ldot" cx="44" cy="38" r="4.5"/>
+  <circle class="ldot" cx="22" cy="48" r="2.2"/>
+  <circle class="ldot" cx="66" cy="48" r="2.2"/>
+  <circle class="ldot" cx="44" cy="58" r="3"/>
+</g>
+<style>@keyframes lspin{to{transform:rotate(360deg)}}</style>
 </svg>
 </div>
 
@@ -311,33 +290,34 @@ st.markdown("""
         font-weight: 600;
         letter-spacing: 4px;
         text-transform: uppercase;
-        color: #00c896;
+        color: #2dd4bf;
         font-family: JetBrains Mono, monospace;
         margin-bottom: 6px;
+        opacity: 0.8;
     ">Multi-Criteria Decision Analysis</div>
 
     <div style="
         font-size: 42px;
         font-weight: 700;
-        color: #1c1c1e;
+        color: #e2e8f0;
         letter-spacing: -1.5px;
         line-height: 1.1;
-        font-family: Inter, sans-serif;
-    ">AHP <span style="color:#00897b;">Calculator</span></div>
+        font-family: Space Grotesk, sans-serif;
+    ">AHP <span style="color:#2dd4bf;">Calculator</span></div>
 
     <div style="
         font-size: 14px;
-        color: #8e8e93;
+        color: #475569;
         font-weight: 400;
         margin-top: 8px;
         letter-spacing: 0.2px;
     ">Analytic Hierarchy Process · Pairwise Comparison · Consistency Analysis</div>
 
     <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
-        <span style="background:#e8f5f3;color:#00897b;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;font-family:JetBrains Mono,monospace;">CR &lt; 0.10</span>
-        <span style="background:#f2f2f7;color:#636366;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;font-family:JetBrains Mono,monospace;">Up to n=15</span>
-        <span style="background:#f2f2f7;color:#636366;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;font-family:JetBrains Mono,monospace;">Saaty Scale 1–9</span>
-        <span style="background:#f2f2f7;color:#636366;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;font-family:JetBrains Mono,monospace;">GIS Ready</span>
+        <span style="background:#2dd4bf11;border:1px solid #2dd4bf33;color:#2dd4bf;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;font-family:JetBrains Mono,monospace;">CR &lt; 0.10</span>
+        <span style="background:#1e2d42;color:#475569;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;font-family:JetBrains Mono,monospace;">Up to n=15</span>
+        <span style="background:#1e2d42;color:#475569;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;font-family:JetBrains Mono,monospace;">Saaty Scale 1–9</span>
+        <span style="background:#1e2d42;color:#475569;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;font-family:JetBrains Mono,monospace;">GIS Ready</span>
     </div>
 </div>
 </div>
@@ -357,10 +337,10 @@ A <b>Consistency Ratio CR &lt; 0.10</b> confirms acceptable judgement consistenc
 # ─────────────────────────── SIDEBAR ───────────────────────────
 st.sidebar.markdown("""
 <div style="padding:20px 6px 6px 6px;">
-<div style="font-size:18px;font-weight:700;color:#1c1c1e;letter-spacing:-0.5px;margin-bottom:2px;">
+<div style="font-size:18px;font-weight:700;color:#e2e8f0;letter-spacing:-0.5px;margin-bottom:2px;">
 Settings</div>
-<div style="font-size:12px;color:#8e8e93;margin-bottom:16px;">Configure your AHP model</div>
-<div style="height:1px;background:#f2f2f7;margin-bottom:16px;"></div>
+<div style="font-size:12px;color:#475569;margin-bottom:16px;">Configure your AHP model</div>
+<div style="height:1px;background:#1e2d42;margin-bottom:16px;"></div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -373,15 +353,15 @@ criteria = [c.strip() for c in criteria_input.split(",") if c.strip()]
 n = len(criteria)
 
 st.sidebar.markdown(f"""
-<div style="background:#f0fdf9;border-radius:12px;padding:10px 14px;margin:8px 0 16px 0;
-border:1px solid #d1fae5;">
-<span style="font-size:11px;color:#00897b;font-family:JetBrains Mono,monospace;font-weight:600;">
+<div style="background:#071a14;border-radius:10px;padding:10px 14px;margin:8px 0 16px 0;
+border:1px solid #2dd4bf22;">
+<span style="font-size:11px;color:#2dd4bf;font-family:JetBrains Mono,monospace;font-weight:600;">
 n = {n} criteria detected</span>
 </div>
 """, unsafe_allow_html=True)
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### ðﾟﾓﾐ AHP Formulas")
+st.sidebar.markdown("### 📐 AHP Formulas")
 st.sidebar.markdown("**Step 1 · Normalize columns**")
 st.sidebar.latex(r"\bar{a}_{ij} = \frac{a_{ij}}{\sum_{k=1}^{n} a_{kj}}")
 st.sidebar.markdown("**Step 2 · Average / Weight**")
@@ -399,8 +379,8 @@ st.sidebar.latex(r"CI = \frac{\lambda_{max} - n}{n - 1}")
 st.sidebar.markdown("**Step 8 · CR**")
 st.sidebar.latex(r"CR = \frac{CI}{RI}")
 st.sidebar.markdown("""
-<div style="background:#f0fdf9;border-left:3px solid #00c896;border-radius:0 10px 10px 0;
-padding:10px 14px;font-size:12px;color:#00897b;font-family:JetBrains Mono,monospace;margin-top:8px;">
+<div style="background:#071a14;border-left:3px solid #2dd4bf;border-radius:0 10px 10px 0;
+padding:10px 14px;font-size:12px;color:#2dd4bf;font-family:JetBrains Mono,monospace;margin-top:8px;">
 ✓ Acceptable when CR &lt; 0.10</div>
 """, unsafe_allow_html=True)
 
@@ -412,29 +392,30 @@ RI_dict = {
    11: 1.51,12: 1.48,13: 1.56,14: 1.57, 15: 1.59
 }
 
-st.sidebar.markdown("### ðﾟﾓﾊ Random Index (RI)")
+st.sidebar.markdown("### 📊 Random Index (RI)")
 ri_df = pd.DataFrame(list(RI_dict.items()), columns=["n", "RI"])
 st.sidebar.dataframe(ri_df, use_container_width=True, hide_index=True)
 st.sidebar.markdown(f"""
-<div style="background:#f2f2f7;border-radius:10px;padding:8px 12px;margin-top:6px;
-font-size:11px;color:#636366;font-family:JetBrains Mono,monospace;">
+<div style="background:#0b1520;border-radius:10px;padding:8px 12px;margin-top:6px;
+font-size:11px;color:#475569;font-family:JetBrains Mono,monospace;border:1px solid #1e2d42;">
 n={n} → RI = {RI_dict.get(n, 1.59)}</div>
 """, unsafe_allow_html=True)
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### ðﾟﾔﾢ Saaty Scale")
+st.sidebar.markdown("### 🔢 Saaty Scale")
 saaty_df = pd.DataFrame({
-    "Val":  [1,2,3,4,5,6,7,8,9],
-    "Meaning": ["Equal","Weak","Moderate","Mod+","Strong","Strong+","V.Strong","V.V.Strong","Extreme"],
-    "1/x":  ["1/1","1/2","1/3","1/4","1/5","1/6","1/7","1/8","1/9"]
+    "Val":     [1,2,3,4,5,6,7,8,9],
+    "Meaning": ["Equal","Weak","Moderate","Mod+","Strong",
+                "Strong+","V.Strong","V.V.Strong","Extreme"],
+    "1/x":     ["1/1","1/2","1/3","1/4","1/5","1/6","1/7","1/8","1/9"]
 })
 st.sidebar.dataframe(saaty_df, use_container_width=True, hide_index=True)
 
 # ─────────────────────────── MATRIX INPUT ───────────────────────────
 st.markdown("""
 <div class='card'>
-<div class='section-title'>Pairwise Comparison Matrix <span class='tag'>Step 1</span></div>
-<div class='section-sub'>Fill upper triangle only · Diagonal = 1 · Reciprocals auto-computed · Use Saaty scale 1–9</div>
+<div class='section-title'>Pairwise Comparison Matrix Input <span class='tag'>Step 1</span></div>
+<div class='section-sub'>Fill upper triangle only · Diagonal = 1 · Reciprocals auto-computed · Saaty scale 1–9</div>
 """, unsafe_allow_html=True)
 
 matrix = np.ones((n, n))
@@ -442,7 +423,7 @@ matrix = np.ones((n, n))
 for i in range(n):
     cols = st.columns([1.0] + [1] * n)
     cols[0].markdown(
-        f"<div style='padding:8px 2px;color:#3c3c43;font-size:12px;"
+        f"<div style='padding:8px 2px;color:#64748b;font-size:12px;"
         f"font-family:JetBrains Mono,monospace;font-weight:500;'>{criteria[i]}</div>",
         unsafe_allow_html=True
     )
@@ -467,7 +448,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 # ─────────────────────────── RUN BUTTON ───────────────────────────
 st.markdown("<div style='height:4px'></div>", unsafe_allow_html=True)
 
-if st.button("▶  Run AHP Analysis", use_container_width=True):
+if st.button("▶  RUN AHP ANALYSIS", use_container_width=True):
 
     # ══════ CORE CALCULATIONS ══════
     col_sums           = matrix.sum(axis=0)
@@ -528,16 +509,16 @@ if st.button("▶  Run AHP Analysis", use_container_width=True):
     <div class='section-title'>Consistency Summary <span class='tag'>Table 4</span></div>
     <div class='section-sub'>Weighted sums, criteria weights and lambda values</div>""", unsafe_allow_html=True)
     df4 = pd.DataFrame({
-        "Criteria":              criteria,
-        "Weighted Sum (WS)":     weighted_sum.round(4),
-        "Criteria Weight (CW)":  CW.round(4),
-        "WS / CW  (λ)":          wsv_over_cw.round(4),
+        "Criteria":             criteria,
+        "Weighted Sum (WS)":    weighted_sum.round(4),
+        "Criteria Weight (CW)": CW.round(4),
+        "WS / CW  (λ)":         wsv_over_cw.round(4),
     })
     total4 = pd.DataFrame([{
-        "Criteria":              "TOTAL",
-        "Weighted Sum (WS)":     round(weighted_sum.sum(), 4),
-        "Criteria Weight (CW)":  round(CW.sum(), 4),
-        "WS / CW  (λ)":          round(wsv_over_cw.sum(), 4),
+        "Criteria":             "TOTAL",
+        "Weighted Sum (WS)":    round(weighted_sum.sum(), 4),
+        "Criteria Weight (CW)": round(CW.sum(), 4),
+        "WS / CW  (λ)":         round(wsv_over_cw.sum(), 4),
     }])
     df4 = pd.concat([df4, total4], ignore_index=True)
     st.dataframe(df4, use_container_width=True, hide_index=True)
@@ -595,50 +576,49 @@ if st.button("▶  Run AHP Analysis", use_container_width=True):
     <div class='section-title'>Weight Visualization <span class='tag'>Charts</span></div>
     <div class='section-sub'>Priority weights distribution across criteria</div>""", unsafe_allow_html=True)
 
+    BG      = "#080c10"
+    SURFACE = "#0e1520"
+    TEAL    = "#2dd4bf"
+    TEAL2   = "#0d9488"
+    MUTED   = "#475569"
+    TEXT    = "#94a3b8"
+    WHITE   = "#080c10"
+
     sorted_criteria = [criteria[i] for i in sorted_idx]
     sorted_cw       = [CW[i]       for i in sorted_idx]
+    palette = [TEAL, TEAL2, "#0f766e", "#134e4a", "#115e59",
+               "#1d4ed8", "#1e40af", "#1e3a8a", "#312e81", "#4338ca"]
 
-    LTEAL   = "#00897b"
-    LTEAL2  = "#00c896"
-    LGRAY   = "#f2f2f7"
-    LTEXT   = "#3c3c43"
-    LMUTED  = "#8e8e93"
-    WHITE   = "#ffffff"
-
-    palette = ["#00897b","#26a69a","#4db6ac","#80cbc4",
-               "#00796b","#00695c","#80deea","#4dd0e1",
-               "#26c6da","#00bcd4"]
-
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5.5), facecolor=WHITE)
-    fig.subplots_adjust(wspace=0.3)
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5.5), facecolor=BG)
+    fig.subplots_adjust(wspace=0.35)
 
     # Bar chart
     ax1 = axes[0]
-    ax1.set_facecolor(LGRAY)
+    ax1.set_facecolor(SURFACE)
     bar_colors = [palette[i % len(palette)] for i in range(len(sorted_cw))]
-    bar_colors[0] = LTEAL
+    bar_colors[0] = TEAL
     bars = ax1.bar(sorted_criteria, sorted_cw, color=bar_colors,
-                   edgecolor=WHITE, linewidth=1.5, width=0.58, zorder=3)
-    ax1.set_title("Criteria Weight (CW)", color=LTEXT, fontsize=11,
-                  pad=14, fontfamily="monospace", loc="left")
-    ax1.set_xlabel("Criteria", color=LMUTED, fontsize=9, labelpad=8)
-    ax1.set_ylabel("CW", color=LMUTED, fontsize=9, labelpad=8)
-    ax1.tick_params(colors=LMUTED, labelsize=8)
+                   edgecolor=BG, linewidth=1.2, width=0.58, zorder=3)
+    ax1.set_title("Criteria Weight (CW)", color=TEXT, fontsize=11,
+                  pad=14, fontfamily="monospace", fontweight="normal", loc="left")
+    ax1.set_xlabel("Criteria", color=MUTED, fontsize=9, labelpad=8)
+    ax1.set_ylabel("CW", color=MUTED, fontsize=9, labelpad=8)
+    ax1.tick_params(colors=MUTED, labelsize=8)
     for sp in ax1.spines.values():
-        sp.set_color("#e5e5ea")
-        sp.set_linewidth(0.7)
-    ax1.grid(axis="y", color="#e5e5ea", linewidth=0.6, zorder=0)
+        sp.set_color("#1e2d42")
+        sp.set_linewidth(0.5)
+    ax1.yaxis.set_minor_locator(ticker.AutoMinorLocator())
+    ax1.grid(axis="y", color="#1e2d42", linewidth=0.5, zorder=0)
     ax1.set_axisbelow(True)
-    ax1.set_facecolor(LGRAY)
     for bar, w in zip(bars, sorted_cw):
         ax1.text(bar.get_x() + bar.get_width()/2,
                  bar.get_height() + max(sorted_cw)*0.015,
                  f"{w:.4f}", ha="center", va="bottom",
-                 color=LTEAL, fontsize=7.5, fontfamily="monospace")
+                 color=TEAL, fontsize=7.5, fontfamily="monospace")
 
     # Pie chart
     ax2 = axes[1]
-    ax2.set_facecolor(WHITE)
+    ax2.set_facecolor(BG)
     wedges, texts, autotexts = ax2.pie(
         sorted_cw,
         labels=sorted_criteria,
@@ -646,14 +626,14 @@ if st.button("▶  Run AHP Analysis", use_container_width=True):
         colors=palette[:len(sorted_cw)],
         startangle=140,
         pctdistance=0.78,
-        textprops={"color": LMUTED, "fontsize": 8, "fontfamily": "monospace"},
-        wedgeprops={"edgecolor": WHITE, "linewidth": 2}
+        textprops={"color": TEXT, "fontsize": 8, "fontfamily": "monospace"},
+        wedgeprops={"edgecolor": BG, "linewidth": 2}
     )
     for at in autotexts:
-        at.set_color(LTEXT)
+        at.set_color("#e2e8f0")
         at.set_fontsize(7.5)
-    ax2.set_title("CW Distribution", color=LTEXT, fontsize=11,
-                  pad=14, fontfamily="monospace", loc="left")
+    ax2.set_title("CW Distribution", color=TEXT, fontsize=11,
+                  pad=14, fontfamily="monospace", fontweight="normal", loc="left")
 
     plt.tight_layout()
     st.pyplot(fig, use_container_width=True)
@@ -688,40 +668,41 @@ if st.button("▶  Run AHP Analysis", use_container_width=True):
 st.markdown("""
 <div class="footer-wrap">
 
-<!-- Decorative top line -->
+<!-- Decorative divider -->
 <div style="display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:32px;">
-    <div style="height:1px;width:60px;background:linear-gradient(90deg,transparent,#00c896);"></div>
+    <div style="height:1px;width:60px;background:linear-gradient(90deg,transparent,#2dd4bf44);"></div>
     <svg width="20" height="20" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="44,6 70,21 70,51 44,66 18,51 18,21"
-             fill="none" stroke="#00c896" stroke-width="2"
-             style="animation:lspin2 8s linear infinite;transform-origin:44px 44px;">
-    <animateTransform attributeName="transform" type="rotate"
-        from="0 44 44" to="360 44 44" dur="8s" repeatCount="indefinite"/>
-    </polygon>
-    <circle cx="44" cy="36" r="5" fill="#00897b"/>
+      <polygon points="44,6 70,21 70,51 44,66 18,51 18,21"
+               fill="none" stroke="#2dd4bf" stroke-width="2" opacity="0.5">
+        <animateTransform attributeName="transform" type="rotate"
+            from="0 44 44" to="360 44 44" dur="8s" repeatCount="indefinite"/>
+      </polygon>
+      <circle cx="44" cy="36" r="5" fill="#2dd4bf" opacity="0.7"/>
     </svg>
-    <div style="height:1px;width:60px;background:linear-gradient(90deg,#00c896,transparent);"></div>
+    <div style="height:1px;width:60px;background:linear-gradient(90deg,#2dd4bf44,transparent);"></div>
 </div>
 
-<!-- Credit card with scroll animation -->
+<!-- Credit card -->
 <div style="
     position: relative;
     width: 320px;
     height: 200px;
     margin: 0 auto 28px auto;
-    background: linear-gradient(145deg, #ffffff, #f0fdf9);
+    background: linear-gradient(145deg, #0e1520, #0a1a14);
     border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0,200,150,0.12), 0 2px 8px rgba(0,0,0,0.06);
+    box-shadow: 0 8px 40px rgba(45,212,191,0.08), 0 2px 8px rgba(0,0,0,0.3);
     overflow: hidden;
-    border: 1px solid #d1fae5;
+    border: 1px solid #1e2d42;
 ">
-    <!-- Soft teal circle decoration -->
-    <div style="position:absolute;width:180px;height:180px;background:radial-gradient(circle,#00c89612,transparent);
+    <div style="position:absolute;width:180px;height:180px;
+    background:radial-gradient(circle,#2dd4bf0a,transparent);
     top:-40px;right:-40px;border-radius:50%;"></div>
-    <div style="position:absolute;width:100px;height:100px;background:radial-gradient(circle,#00897b0a,transparent);
+    <div style="position:absolute;width:100px;height:100px;
+    background:radial-gradient(circle,#0d948808,transparent);
     bottom:-20px;left:-20px;border-radius:50%;"></div>
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;
+    background:linear-gradient(90deg,transparent,#2dd4bf33,transparent);"></div>
 
-    <!-- Scrolling credit lines -->
     <div style="
         position: absolute;
         inset: 0;
@@ -730,82 +711,64 @@ st.markdown("""
         align-items: center;
         justify-content: center;
         padding: 24px;
-        gap: 6px;
-        animation: creditFade 0.8s ease both;
+        gap: 5px;
     ">
         <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;
-        color:#00c896;font-family:JetBrains Mono,monospace;font-weight:600;
-        animation:slideUp 0.6s 0.1s ease both;opacity:0;">
-        Created by</div>
+        color:#2dd4bf;font-family:JetBrains Mono,monospace;font-weight:600;opacity:0;
+        animation:slideUp 0.6s 0.1s ease both;">Created by</div>
 
-        <div style="font-size:26px;font-weight:700;color:#1c1c1e;letter-spacing:-0.5px;
-        font-family:Inter,sans-serif;
-        animation:slideUp 0.6s 0.25s ease both;opacity:0;">
-        Anindo Paul</div>
+        <div style="font-size:26px;font-weight:700;color:#e2e8f0;letter-spacing:-0.5px;
+        font-family:Space Grotesk,sans-serif;opacity:0;
+        animation:slideUp 0.6s 0.25s ease both;">Anindo Paul</div>
 
-        <div style="font-size:22px;font-weight:300;color:#00897b;letter-spacing:1px;
-        font-family:Inter,sans-serif;
-        animation:slideUp 0.6s 0.38s ease both;opacity:0;">
-        Sourav</div>
+        <div style="font-size:22px;font-weight:300;color:#2dd4bf;letter-spacing:1px;
+        font-family:Space Grotesk,sans-serif;opacity:0;
+        animation:slideUp 0.6s 0.38s ease both;">Sourav</div>
 
-        <div style="height:1px;width:60px;background:linear-gradient(90deg,transparent,#00c896,transparent);
-        margin:6px 0;animation:slideUp 0.6s 0.5s ease both;opacity:0;"></div>
+        <div style="height:1px;width:60px;
+        background:linear-gradient(90deg,transparent,#2dd4bf44,transparent);
+        margin:5px 0;opacity:0;animation:slideUp 0.6s 0.5s ease both;"></div>
 
-        <div style="font-size:11px;color:#8e8e93;font-family:JetBrains Mono,monospace;
-        letter-spacing:1px;animation:slideUp 0.6s 0.62s ease both;opacity:0;">
+        <div style="font-size:11px;color:#475569;font-family:JetBrains Mono,monospace;
+        letter-spacing:1.5px;opacity:0;animation:slideUp 0.6s 0.62s ease both;">
         AHP CALCULATOR</div>
 
-        <div style="font-size:10px;color:#aeaeb2;font-family:JetBrains Mono,monospace;
-        animation:slideUp 0.6s 0.75s ease both;opacity:0;">
+        <div style="font-size:10px;color:#334155;font-family:JetBrains Mono,monospace;
+        opacity:0;animation:slideUp 0.6s 0.75s ease both;">
         Free for all users · 2025</div>
     </div>
 </div>
 
 <!-- Pulsing dots -->
-<div style="display:flex;justify-content:center;gap:6px;margin-bottom:20px;">
-    <div style="width:5px;height:5px;border-radius:50%;background:#00c896;
+<div style="display:flex;justify-content:center;gap:6px;margin-bottom:22px;">
+    <div style="width:5px;height:5px;border-radius:50%;background:#2dd4bf;
     animation:pdot 1.4s 0s ease-in-out infinite;"></div>
-    <div style="width:5px;height:5px;border-radius:50%;background:#00c896;
+    <div style="width:5px;height:5px;border-radius:50%;background:#2dd4bf;
     animation:pdot 1.4s 0.2s ease-in-out infinite;"></div>
-    <div style="width:5px;height:5px;border-radius:50%;background:#00c896;
+    <div style="width:5px;height:5px;border-radius:50%;background:#2dd4bf;
     animation:pdot 1.4s 0.4s ease-in-out infinite;"></div>
 </div>
 
 <!-- Links -->
-<div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:16px;">
+<div style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:18px;">
     <a href="https://www.linkedin.com/in/anindo046/" target="_blank"
-    style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf9;
-    border:1px solid #d1fae5;border-radius:20px;padding:7px 16px;
-    font-size:12px;color:#00897b;font-weight:600;text-decoration:none;
-    font-family:Inter,sans-serif;transition:all 0.15s;">
-    ðﾟﾔﾗ LinkedIn</a>
+    style="display:inline-flex;align-items:center;gap:6px;background:#071a14;
+    border:1px solid #2dd4bf22;border-radius:20px;padding:7px 16px;
+    font-size:12px;color:#2dd4bf;font-weight:600;text-decoration:none;
+    font-family:Space Grotesk,sans-serif;">
+    🔗 LinkedIn</a>
     <a href="https://anindo46.github.io/portfolio/" target="_blank"
-    style="display:inline-flex;align-items:center;gap:6px;background:#f2f2f7;
-    border:1px solid #e5e5ea;border-radius:20px;padding:7px 16px;
-    font-size:12px;color:#636366;font-weight:600;text-decoration:none;
-    font-family:Inter,sans-serif;transition:all 0.15s;">
-    ðﾟﾌﾐ Portfolio</a>
+    style="display:inline-flex;align-items:center;gap:6px;background:#0b1520;
+    border:1px solid #1e2d42;border-radius:20px;padding:7px 16px;
+    font-size:12px;color:#475569;font-weight:600;text-decoration:none;
+    font-family:Space Grotesk,sans-serif;">
+    🌐 Portfolio</a>
 </div>
 
-<div style="font-size:11px;color:#c7c7cc;font-family:JetBrains Mono,monospace;
+<div style="font-size:11px;color:#1e2d42;font-family:JetBrains Mono,monospace;
 letter-spacing:1px;padding-bottom:20px;">
-Analytic Hierarchy Process · Open Source · MIT License
+Analytic Hierarchy Process · Open Source · 2025
 </div>
 
 </div>
-
-<style>
-@keyframes slideUp {
-    from { opacity:0; transform: translateY(14px); }
-    to   { opacity:1; transform: translateY(0); }
-}
-@keyframes creditFade {
-    from { opacity:0; }
-    to   { opacity:1; }
-}
-@keyframes pdot {
-    0%, 100% { opacity:0.25; transform:scale(0.85); }
-    50%       { opacity:1;    transform:scale(1.3); }
-}
-</style>
 """, unsafe_allow_html=True)
