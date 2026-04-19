@@ -586,11 +586,131 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
     card_close()
 
 # ─────────────────────────── ANIMATED CREDITS ───────────────────────────
+# ─────────────────────────── ANIMATED CREDITS ───────────────────────────
 st.markdown("""
-<div class='footer'>
-<b style='color:#80cbc4;font-size:15px'>Anindo Paul Sourav</b><br>
-<span style='color:#546e7a'>AHP Calculator · Free for all users</span><br><br>
-<a href='https://www.linkedin.com/in/anindo046/' target='_blank'>🔗 LinkedIn</a> &nbsp;|&nbsp;
-<a href='https://anindo46.github.io/portfolio/' target='_blank'>🌐 Portfolio</a>
+<style>
+.premium-footer {
+    margin-top: 50px;
+    padding: 30px 20px;
+    background: linear-gradient(145deg, rgba(12, 20, 32, 0.8) 0%, rgba(6, 10, 14, 0.95) 100%);
+    border: 1px solid rgba(45, 212, 191, 0.15);
+    border-radius: 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+    animation: floatUp 1s ease-out forwards;
+}
+
+.premium-footer::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(45,212,191,0.05) 0%, transparent 60%);
+    animation: slowSpin 15s linear infinite;
+    pointer-events: none;
+}
+
+.pf-label {
+    font-size: 10px;
+    color: #4a6070;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+}
+
+.pf-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #2dd4bf, #80cbc4, #2dd4bf);
+    background-size: 200% auto;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: shine 3s linear infinite;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+.pf-info {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    color: #6a8a9a;
+    margin-bottom: 22px;
+    letter-spacing: 0.2px;
+}
+
+.pf-info span {
+    color: #2dd4bf;
+    opacity: 0.7;
+}
+
+.pf-links {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    position: relative;
+    z-index: 2;
+}
+
+.pf-link {
+    text-decoration: none !important;
+    color: #a7f3d0 !important;
+    background: rgba(45, 212, 191, 0.05);
+    border: 1px solid rgba(45, 212, 191, 0.2);
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pf-link:hover {
+    background: rgba(45, 212, 191, 0.15);
+    border-color: rgba(45, 212, 191, 0.5);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(45, 212, 191, 0.15);
+    color: #ffffff !important;
+}
+
+@keyframes shine {
+    to { background-position: 200% center; }
+}
+@keyframes floatUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes slowSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+
+<div class="premium-footer">
+    <div class="pf-label">Designed & Developed By</div>
+    <div class="pf-name">Anindo Paul Sourav</div>
+    <div class="pf-info">
+        Geology and Mining <span>•</span> University of Barishal
+    </div>
+    <div class="pf-links">
+        <a href="https://www.linkedin.com/in/anindo046/" target="_blank" class="pf-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+            LinkedIn
+        </a>
+        <a href="https://anindo46.github.io/portfolio/" target="_blank" class="pf-link">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            Portfolio
+        </a>
+    </div>
 </div>
 """, unsafe_allow_html=True)
