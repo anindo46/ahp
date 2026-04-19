@@ -8,187 +8,76 @@ st.set_page_config(page_title="AHP Calculator", layout="wide")
 # ─────────────────────────── STYLE ───────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap');
 
-html, body, [class*="css"] {
-    font-family: 'Inter', sans-serif;
-}
+html, body, [class*="css"] { font-family: 'IBM Plex Sans', sans-serif; }
+.stApp { background: #0f1117; }
 
-.stApp {
-    background: radial-gradient(circle at 20% 20%, #0b0f14, #030507);
-}
-
-/* Smooth animation */
-@keyframes fadeUp {
-    from {opacity:0; transform:translateY(10px);}
-    to {opacity:1; transform:translateY(0);}
-}
-
-/* Premium glass card */
-.card, .ahp-card {
-    background: rgba(255,255,255,0.025);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 22px;
-    animation: fadeUp 0.35s ease;
-}
-
-/* Section headers */
-.section-title, .ahp-sec-label {
-    font-family: 'JetBrains Mono', monospace;
-    color: #34d399;
-    letter-spacing: 2px;
-    font-size: 12px;
-}
-
-/* Buttons */
-.stButton > button {
-    background: linear-gradient(135deg, #065f46, #10b981);
-    border-radius: 12px;
-    border: none;
-    font-weight: 600;
-    letter-spacing: 1px;
-    transition: all 0.2s ease;
-}
-.stButton > button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(16,185,129,0.3);
-}
-
-/* Inputs */
-input {
-    background:#020406 !important;
-    border:1px solid #1f2937 !important;
-    color:#d1fae5 !important;
-}
-
-/* Dataframe */
-div[data-testid="stDataFrame"] {
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.06);
-}
-
-/* Metrics */
-.ahp-metric, .metric-box {
-    background: rgba(255,255,255,0.03);
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.05);
-}
-
-/* Footer */
-.footer {
-    text-align:center;
-    padding:40px;
-    border-top:1px solid rgba(255,255,255,0.05);
-    color:#6b7280;
-}
-.metric-pro {
-    background: linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 18px;
-    padding: 22px 18px;
+.title {
     text-align: center;
-    backdrop-filter: blur(10px);
-    transition: all 0.25s ease;
-}
-.metric-pro:hover {
-    transform: translateY(-3px);
-    border-color: rgba(52,211,153,0.3);
-}
-.metric-title {
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: #6b7280;
-    font-family: 'JetBrains Mono', monospace;
-    margin-bottom: 8px;
-}
-.metric-value-big {
-    font-size: 26px;
+    font-size: 38px;
     font-weight: 700;
-    color: #e5fff5;
-    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 2px;
+    color: #e0f7e9;
+    padding: 18px 0 4px 0;
+    font-family: 'IBM Plex Mono', monospace;
 }
-.metric-sub {
-    font-size: 11px;
-    color: #6b7280;
-    margin-top: 6px;
-}
-.highlight {
-    background: linear-gradient(145deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05));
-    border: 1px solid rgba(16,185,129,0.35);
-    box-shadow: 0 0 25px rgba(16,185,129,0.15);
-}
-.cr-good { color: #34d399; }
-.cr-bad { color: #f87171; }
-
-/* ───────── PREMIUM NOTICE CARD ───────── */
-.notice-pro {
-    position: relative;
-    background: linear-gradient(145deg, rgba(16,185,129,0.08), rgba(16,185,129,0.02));
-    border: 1px solid rgba(16,185,129,0.25);
-    border-radius: 18px;
-    padding: 20px 22px;
-    margin-bottom: 22px;
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-    transition: all 0.25s ease;
-}
-
-/* subtle glow layer */
-.notice-pro::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at top right, rgba(16,185,129,0.15), transparent 60%);
-    opacity: 0.6;
-    pointer-events: none;
-}
-
-/* hover lift */
-.notice-pro:hover {
-    transform: translateY(-2px);
-    border-color: rgba(52,211,153,0.4);
-    box-shadow: 0 10px 35px rgba(16,185,129,0.15);
-}
-
-/* header */
-.notice-head {
-    font-size: 11px;
-    letter-spacing: 3px;
+.subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: #78909c;
+    letter-spacing: 4px;
     text-transform: uppercase;
-    color: #34d399;
-    font-family: 'JetBrains Mono', monospace;
-    margin-bottom: 12px;
+    margin-bottom: 28px;
 }
-
-/* body text */
-.notice-body {
-    font-size: 13.5px;
-    color: #d1fae5;
-    line-height: 1.7;
+.card {
+    background: rgba(255,255,255,0.03);
+    padding: 22px 26px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.07);
+    margin-bottom: 22px;
 }
-
-/* highlight rule */
-.cr-rule {
-    display: inline-block;
-    background: rgba(16,185,129,0.15);
-    padding: 4px 10px;
+.section-title {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #80cbc4;
+    margin-bottom: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    border-bottom: 1px solid rgba(128,203,196,0.2);
+    padding-bottom: 8px;
+}
+.notice {
+    background: rgba(0,200,83,0.07);
+    padding: 14px 18px;
+    border-left: 4px solid #00c853;
     border-radius: 8px;
-    color: #34d399;
-    font-weight: 600;
-    margin-top: 6px;
+    font-size: 13px;
+    color: #b2dfdb;
 }
-
-/* bullet styling */
-.notice-point {
-    margin-top: 6px;
-    color: #a7f3d0;
+.cr-ok   { color: #69f0ae; font-weight: 700; font-size: 16px; }
+.cr-fail { color: #ff5252; font-weight: 700; font-size: 16px; }
+.metric-box {
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 14px;
+    text-align: center;
 }
-
-
+.metric-label { font-size: 11px; color: #78909c; letter-spacing: 2px; text-transform: uppercase; }
+.metric-value { font-size: 26px; font-weight: 700; color: #e0f7e9; font-family: 'IBM Plex Mono', monospace; }
+.footer {
+    text-align: center;
+    padding: 30px;
+    margin-top: 40px;
+    color: #546e7a;
+    font-size: 13px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+.footer a { color: #80cbc4; text-decoration: none; }
+div[data-testid="stDataFrame"] { border-radius: 8px; overflow: hidden; }
+section[data-testid="stSidebar"] { background: #0d1117; border-right: 1px solid rgba(255,255,255,0.06); }
 </style>
 """, unsafe_allow_html=True)
 
@@ -235,28 +124,11 @@ st.markdown("""
 
 # ─────────────────────────── NOTICE ───────────────────────────
 st.markdown("""
-<div class="notice-pro">
-
-  <div class="notice-head">
-    ⚡ HOW TO USE
-  </div>
-
-  <div class="notice-body">
-
-    Enter your <b>criteria</b> in the sidebar, separated by commas.
-
-    <div class="notice-point">• Fill only the <b>upper triangle</b> using Saaty scale (1–9)</div>
-    <div class="notice-point">• Diagonal is fixed at <b>1</b></div>
-    <div class="notice-point">• Lower triangle is <b>auto-calculated (reciprocal)</b></div>
-
-    <br>
-
-    Your results are valid only if:<br>
-    <span class="cr-rule">CR &lt; 0.10</span>
-
-  </div>
-
-</div>
+<div class='card'>
+<div class='notice'>
+📌 <b>Instructions:</b> Enter criteria separated by commas. Fill upper-triangle values using Saaty scale (1–9).
+Diagonal is automatically set to 1, and reciprocals are auto-filled. A <b>CR &lt; 0.10</b> indicates acceptable consistency.
+</div></div>
 """, unsafe_allow_html=True)
 
 # ─────────────────────────── SIDEBAR ───────────────────────────
