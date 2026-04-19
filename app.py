@@ -586,47 +586,11 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
     card_close()
 
 # ─────────────────────────── ANIMATED CREDITS ───────────────────────────
-st.markdown('''
-<div style="margin-top:50px;padding:30px 20px;text-align:center;
-border-top:1px solid #0f1a24;">
-
-  <!-- Name -->
-  <div style="font-size:16px;font-weight:700;color:#2dd4bf;
-  letter-spacing:0.5px;margin-bottom:6px;">
-    Anindo Paul Sourav
-  </div>
-
-  <!-- Subtitle -->
-  <div style="font-size:12px;color:#5b7285;margin-bottom:16px;">
-    AHP Calculator · Free for all users
-  </div>
-
-  <!-- Divider -->
-  <div style="height:1px;width:60px;margin:0 auto 18px auto;
-  background:linear-gradient(90deg,transparent,#2dd4bf40,transparent);"></div>
-
-  <!-- Buttons -->
-  <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;">
-
-    <a href="https://www.linkedin.com/in/anindo046/" target="_blank"
-    style="padding:7px 16px;border-radius:20px;
-    background:rgba(45,212,191,0.08);
-    border:1px solid rgba(45,212,191,0.25);
-    color:#2dd4bf;font-size:11px;font-weight:600;
-    text-decoration:none;transition:0.2s;">
-    🔗 LinkedIn
-    </a>
-
-    <a href="https://anindo46.github.io/portfolio/" target="_blank"
-    style="padding:7px 16px;border-radius:20px;
-    background:#0a0f14;
-    border:1px solid #1a2633;
-    color:#6b8497;font-size:11px;font-weight:600;
-    text-decoration:none;">
-    🌐 Portfolio
-    </a>
-
-  </div>
-
+st.markdown("""
+<div class='footer'>
+<b style='color:#80cbc4;font-size:15px'>Anindo Paul Sourav</b><br>
+<span style='color:#546e7a'>AHP Calculator · Free for all users</span><br><br>
+<a href='https://www.linkedin.com/in/anindo046/' target='_blank'>🔗 LinkedIn</a> &nbsp;|&nbsp;
+<a href='https://anindo46.github.io/portfolio/' target='_blank'>🌐 Portfolio</a>
 </div>
-''', unsafe_allow_html=True)
+""", unsafe_allow_html=True)
