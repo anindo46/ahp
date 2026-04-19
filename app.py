@@ -142,7 +142,7 @@ section[data-testid="stSidebar"] * { font-family: 'Space Grotesk', sans-serif !i
     font-family: 'JetBrains Mono', monospace;
     letter-spacing: -0.5px;
 }
-.ahp-metric-val.ok   { color: #2dd4bf; }
+.ahp-metric-val.ok    { color: #2dd4bf; }
 .ahp-metric-val.fail { color: #f87171; }
 .ahp-metric-sub {
     font-size: 10px;
@@ -207,19 +207,18 @@ div[data-testid="stDataFrame"] {
 }
 @keyframes pdot {
     0%, 100% { opacity: 0.15; transform: scale(0.8); }
-    50%       { opacity: 1;   transform: scale(1.3); }
+    50%        { opacity: 1;   transform: scale(1.3); }
 }
 @keyframes hexspin {
     to { transform: rotate(360deg); }
 }
 @keyframes lpulse {
     0%, 100% { opacity: 0.12; }
-    50%       { opacity: 0.4;  }
+    50%        { opacity: 0.4;  }
 }
 </style>
 """, unsafe_allow_html=True)
 
-# ─────────────────────────── HEADER ───────────────────────────
 # ─────────────────────────── HEADER ───────────────────────────
 st.markdown("""
 <style>
@@ -354,11 +353,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-
-
-
-
-
 # ─────────────────────────── SIDEBAR ───────────────────────────
 st.sidebar.markdown("""
 <div style="padding:20px 4px 4px 4px;">
@@ -390,7 +384,7 @@ st.sidebar.markdown("---")
 st.sidebar.markdown("### 📐 AHP Formulas")
 for label, formula in [
     ("Step 1 · Normalize columns",      r"\bar{a}_{ij} = \frac{a_{ij}}{\sum_{k=1}^{n} a_{kj}}"),
-    ("Step 2 · Average / Weight",        r"W_i = \frac{1}{n} \sum_{j=1}^{n} \bar{a}_{ij}"),
+    ("Step 2 · Average / Weight",       r"W_i = \frac{1}{n} \sum_{j=1}^{n} \bar{a}_{ij}"),
     ("Step 3 · Criteria Weight",         r"CW_i = \frac{W_i}{n}"),
     ("Step 4 · Consistency Matrix",      r"CM_{ij} = a_{ij} \times CW_j"),
     ("Step 5 · Weighted Sum",            r"WS_i = \sum_{j=1}^{n} CM_{ij}"),
@@ -595,14 +589,21 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
         "Rank":             range(1, n+1),
         "Criteria":         [criteria[i]            for i in sorted_idx],
         "Avg / Weight (W)": [round(avg_weight[i],4) for i in sorted_idx],
-        "Criteria CW":      [round(CW[i],4)          for i in sorted_idx],
-        "CW % ; GIS Priority":             [f"{CW_pct[i]:.2f}%"    for i in sorted_idx],
+        "Criteria CW":      [round(CW[i],4)         for i in sorted_idx],
+        "CW %":             [f"{CW_pct[i]:.2f}%"    for i in sorted_idx],
     })
-    st.dataframe(df5, use_container_width=True, hide_index=True)
+    st.dataframe(
+        df5, 
+        use_container_width=True, 
+        hide_index=True,
+        column_config={
+            "Avg / Weight (W)": st.column_config.NumberColumn(format="%.4f"),
+            "Criteria CW": st.column_config.NumberColumn(format="%.4f")
+        }
+    )
     card_close()
 
-    # CHARTS
-   # CHARTS
+    # CHARTS (Consolidated single block to prevent duplication)
     card_open("Weight Visualization", "Charts", "Priority weight distribution across criteria")
 
     BG   = "#060a0e"
@@ -620,7 +621,22 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
     fig, axes = plt.subplots(1, 2, figsize=(14, 5.2), facecolor=BG)
     fig.subplots_adjust(wspace=0.32)
 
-
+    # Bar
+    ax1 = axes[0]
+    ax1.set_facecolor(SURF)
+    bc = [palette[i % len(palette)] for i in range(len(sorted_cw))]
+    bars = ax1.bar(sorted_criteria, sorted_cw, color=bc,
+                   edgecolor=BG, linewidth=1.4, width=0.56, zorder=3)
+    ax1.set_title("Criteria Weight (CW)", color=TXT, fontsize=11, fontweight="bold",
+                  pad=15, fontfamily="monospace", loc="left")
+    ax1.set_xlabel("Criteria", color=MUT, fontsize=10, labelpad=9)
+    ax1.set_ylabel("CW",       color=MUT, fontsize=10, labelpad=9)
+    ax1.tick_params(colors=MUT, labelsize=9)
+    for sp in ax1.spines.values():
+        sp.set_color("#131f2e"); sp.set_linewidth(0.5)
+    ax1.grid(axis="y", color="#131f2e", linewidth=0.5, zorder=0)
+    ax1.set_axisbelow(True)
+    
     # Enhanced Bar chart text (bold and bright)
     for bar, w in zip(bars, sorted_cw):
         ax1.text(bar.get_x() + bar.get_width()/2,
@@ -628,6 +644,18 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
                  f"{w:.4f}", ha="center", va="bottom",
                  color="#ffffff", fontsize=9, fontweight="bold", fontfamily="monospace")
 
+    # Pie
+    ax2 = axes[1]
+    ax2.set_facecolor(BG)
+    wedges, texts, auts = ax2.pie(
+        sorted_cw, labels=sorted_criteria, autopct="%1.1f%%",
+        colors=palette[:len(sorted_cw)], startangle=140,
+        pctdistance=0.74, # Brought percentages slightly closer to center
+        # Enhanced Pie chart external labels
+        textprops={"color": "#e2e8f0", "fontsize": 10, "fontweight": "500", "fontfamily": "monospace"},
+        wedgeprops={"edgecolor": BG, "linewidth": 2.5}
+    )
+    
     # Enhanced Pie chart internal percentages (bold white)
     for at in auts:
         at.set_color("#ffffff")
@@ -636,25 +664,6 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
         
     ax2.set_title("CW Distribution", color=TXT, fontsize=11, fontweight="bold",
                   pad=15, fontfamily="monospace", loc="left")
-
-    plt.tight_layout()
-    st.pyplot(fig, use_container_width=True)
-    plt.close(fig)
-    card_close()
-    # Pie
-    ax2 = axes[1]
-    ax2.set_facecolor(BG)
-    wedges, texts, auts = ax2.pie(
-        sorted_cw, labels=sorted_criteria, autopct="%1.1f%%",
-        colors=palette[:len(sorted_cw)], startangle=140,
-        pctdistance=0.78,
-        textprops={"color": TXT, "fontsize": 8, "fontfamily": "monospace"},
-        wedgeprops={"edgecolor": BG, "linewidth": 2}
-    )
-    for at in auts:
-        at.set_color("#c8d8e8"); at.set_fontsize(7.5)
-    ax2.set_title("CW Distribution", color=TXT, fontsize=10,
-                  pad=12, fontfamily="monospace", loc="left")
 
     plt.tight_layout()
     st.pyplot(fig, use_container_width=True)
@@ -681,7 +690,6 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
 """)
     card_close()
 
-# ─────────────────────────── ANIMATED CREDITS ───────────────────────────
 # ─────────────────────────── ANIMATED CREDITS ───────────────────────────
 st.markdown("""
 <style>
