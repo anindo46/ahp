@@ -13,7 +13,30 @@ st.markdown("""
 
 html, body, [class*="css"] { font-family: 'Space Grotesk', sans-serif; }
 
-.stApp { background: #060a0e; }
+/* Mathematical Blueprint App Background */
+.stApp {
+    background-color: #060a0e;
+    background-image:
+        linear-gradient(rgba(45, 212, 191, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(45, 212, 191, 0.015) 1px, transparent 1px);
+    background-size: 30px 30px;
+    background-attachment: fixed;
+}
+.stApp::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(45, 212, 191, 0.3), transparent);
+    box-shadow: 0 0 15px rgba(45, 212, 191, 0.1);
+    animation: mathScan 10s linear infinite;
+    pointer-events: none;
+    z-index: 9999;
+    will-change: transform;
+}
+@keyframes mathScan {
+    0% { transform: translateY(-10vh); }
+    100% { transform: translateY(110vh); }
+}
 
 section[data-testid="stSidebar"] {
     background: #080d12 !important;
@@ -120,37 +143,98 @@ section[data-testid="stSidebar"] * { font-family: 'Space Grotesk', sans-serif !i
     letter-spacing: 0.5px;
 }
 
-/* Metric boxes */
+/* ────────────────────────────────────────────────────────
+   PREMIUM MATHEMATICAL METRIC BOXES 
+   ──────────────────────────────────────────────────────── */
 .ahp-metric {
-    background: #090e16;
-    border-radius: 14px;
-    border: 1px solid #131f2e;
-    padding: 20px 14px;
+    background: linear-gradient(160deg, #0c1420 0%, #060a0e 100%);
+    border-radius: 16px;
+    border: 1px solid #1a2736;
+    padding: 24px 16px;
     text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.03);
+    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+    z-index: 1;
 }
+
+.ahp-metric:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(45, 212, 191, 0.08);
+    border-color: #2dd4bf66;
+}
+
+/* Inner glow */
+.ahp-metric::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at 50% 0%, rgba(45, 212, 191, 0.08), transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* GPU-Accelerated background grid animation */
+.ahp-metric-grid {
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background-image:
+        linear-gradient(rgba(45, 212, 191, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(45, 212, 191, 0.04) 1px, transparent 1px);
+    background-size: 24px 24px;
+    z-index: -2;
+    transform: rotate(15deg) translateY(0);
+    animation: metricGridMove 12s linear infinite;
+    pointer-events: none;
+    will-change: transform;
+}
+@keyframes metricGridMove {
+    0% { transform: rotate(15deg) translateY(0); }
+    100% { transform: rotate(15deg) translateY(-24px); }
+}
+
 .ahp-metric-label {
-    font-size: 9px;
-    color: #2a3f55;
-    letter-spacing: 3px;
+    font-size: 13px;
+    color: #94a3b8;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    font-family: 'JetBrains Mono', monospace;
-    margin-bottom: 10px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
+
+.math-sym {
+    font-family: 'Cambria Math', 'Times New Roman', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: #5eead4;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
 .ahp-metric-val {
-    font-size: 20px;
+    font-size: 26px;
     font-weight: 700;
-    color: #c8d8e8;
+    color: #f1f5f9;
     font-family: 'JetBrains Mono', monospace;
     letter-spacing: -0.5px;
+    text-shadow: 0 0 10px rgba(255,255,255,0.05);
 }
-.ahp-metric-val.ok    { color: #2dd4bf; }
-.ahp-metric-val.fail { color: #f87171; }
+.ahp-metric-val.ok    { color: #2dd4bf; text-shadow: 0 0 15px rgba(45, 212, 191, 0.2); }
+.ahp-metric-val.fail { color: #f87171; text-shadow: 0 0 15px rgba(248, 113, 113, 0.2); }
+
 .ahp-metric-sub {
-    font-size: 10px;
-    color: #2a3f55;
-    margin-top: 6px;
-    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 8px;
+    font-family: 'Space Grotesk', sans-serif;
     letter-spacing: 0.5px;
+    font-weight: 500;
 }
 
 /* Button */
@@ -566,16 +650,19 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
     m1, m2, m3, m4 = st.columns(4)
     cr_cls     = "ok"           if CR < 0.10 else "fail"
     cr_verdict = "Consistent"   if CR < 0.10 else "Inconsistent"
+    
+    # ── Premium Animated Metric Boxes ──
     for col, lbl, val, sub in [
-        (m1, "λ max",       f"{lambda_max:.6f}", "Principal eigenvalue"),
-        (m2, "CI",          f"{CI:.6f}",          "Consistency index"),
-        (m3, f"RI  n={n}",  f"{RI}",              "Random index"),
-        (m4, "CR",          f"{CR:.6f}",           cr_verdict),
+        (m1, "<span class='math-sym'>λ</span><sub>max</sub>", f"{lambda_max:.6f}", "Principal Eigenvalue"),
+        (m2, "<span class='math-sym'>CI</span>",              f"{CI:.6f}",          "Consistency Index"),
+        (m3, f"<span class='math-sym'>RI</span> <span style='font-size:11px; font-style:normal; color:#475569; font-family:monospace; margin-left:6px; letter-spacing:0;'>n={n}</span>", f"{RI}", "Random Index"),
+        (m4, "<span class='math-sym'>CR</span>",              f"{CR:.6f}",           cr_verdict),
     ]:
-        extra_cls = f" {cr_cls}" if lbl == "CR" else ""
+        extra_cls = f" {cr_cls}" if "CR" in lbl else ""
         with col:
             st.markdown(f"""
             <div class="ahp-metric">
+              <div class="ahp-metric-grid"></div>
               <div class="ahp-metric-label">{lbl}</div>
               <div class="ahp-metric-val{extra_cls}">{val}</div>
               <div class="ahp-metric-sub">{sub}</div>
