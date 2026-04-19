@@ -586,7 +586,7 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
         "Criteria":         [criteria[i]            for i in sorted_idx],
         "Avg / Weight (W)": [round(avg_weight[i],4) for i in sorted_idx],
         "Criteria CW":      [round(CW[i],4)          for i in sorted_idx],
-        "CW %":             [f"{CW_pct[i]:.2f}%"    for i in sorted_idx],
+        "CW % ; GIS Priority":             [f"{CW_pct[i]:.2f}%"    for i in sorted_idx],
     })
     st.dataframe(df5, use_container_width=True, hide_index=True)
     card_close()
