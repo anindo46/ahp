@@ -590,7 +590,7 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
         "Criteria":         [criteria[i]            for i in sorted_idx],
         "Avg / Weight (W)": [round(avg_weight[i],4) for i in sorted_idx],
         "Criteria CW":      [round(CW[i],4)         for i in sorted_idx],
-        "CW %":             [f"{CW_pct[i]:.2f}%"    for i in sorted_idx],
+        "CW %":             [float(CW_pct[i])       for i in sorted_idx],
     })
     st.dataframe(
         df5, 
@@ -598,9 +598,24 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
         hide_index=True,
         column_config={
             "Avg / Weight (W)": st.column_config.NumberColumn(format="%.4f"),
-            "Criteria CW": st.column_config.NumberColumn(format="%.4f")
+            "Criteria CW": st.column_config.NumberColumn(format="%.4f"),
+            "CW %": st.column_config.ProgressColumn(
+                "CW %",
+                help="Visual representation of criteria weight percentage",
+                format="%.2f %%",
+                min_value=0,
+                max_value=100,
+            )
         }
     )
+    
+    st.markdown("""
+    <div style="background:#061510; border:1px solid #131f2e; border-left:3px solid #2dd4bf; padding:14px 18px; border-radius:8px; margin-top:16px;">
+        <div style="color:#2dd4bf; font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">🗺️ GIS Application Ready</div>
+        <div style="color:#8a9fae; font-size:12px; line-height:1.6;">Input the <b style="color:#c8d8e8;">Criteria CW</b> values into your spatial analysis tool (e.g., ArcGIS Weighted Overlay, QGIS Raster Calculator) to generate your suitability map. Ensure all input raster layers are reclassified to a common scale before multiplying by these weights.</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
     card_close()
 
     # CHARTS (Consolidated single block to prevent duplication)
