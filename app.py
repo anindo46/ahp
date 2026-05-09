@@ -9,213 +9,253 @@ st.set_page_config(page_title="AHP Calculator", layout="wide")
 # ─────────────────────────── STYLE ───────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap');
 
-html, body, [class*="css"] { font-family: 'Space Grotesk', sans-serif; }
+html, body, [class*="css"] {
+    font-family: 'DM Sans', sans-serif;
+}
 
-.stApp { background: #060a0e; }
+.stApp {
+    background: #faf8f4;
+    background-image:
+        radial-gradient(ellipse 900px 600px at 20% 10%, rgba(99, 148, 120, 0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 700px 500px at 80% 80%, rgba(139, 115, 85, 0.06) 0%, transparent 70%);
+}
 
 section[data-testid="stSidebar"] {
-    background: #080d12 !important;
-    border-right: 1px solid #131f2e !important;
+    background: #f4f0e8 !important;
+    border-right: 1px solid #ddd5c4 !important;
 }
-section[data-testid="stSidebar"] * { font-family: 'Space Grotesk', sans-serif !important; }
+section[data-testid="stSidebar"] * {
+    font-family: 'DM Sans', sans-serif !important;
+}
+section[data-testid="stSidebar"] .stMarkdown h3 {
+    font-family: 'Cormorant Garamond', serif !important;
+    color: #2c3e30 !important;
+    font-size: 18px !important;
+}
 
 .main .block-container { padding-top: 0 !important; }
 
 /* Cards */
 .ahp-card {
-    background: #0c1420;
-    padding: 26px 30px;
-    border-radius: 16px;
-    border: 1px solid #162030;
-    margin-bottom: 18px;
+    background: rgba(255, 253, 248, 0.95);
+    padding: 28px 32px;
+    border-radius: 12px;
+    border: 1px solid #e2d9cc;
+    margin-bottom: 20px;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 2px 20px rgba(80, 60, 40, 0.06), 0 1px 4px rgba(80, 60, 40, 0.04);
+    animation: cardRise 0.5s ease-out both;
 }
-.ahp-card::after {
+.ahp-card::before {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0; height: 1px;
-    background: linear-gradient(90deg, transparent 0%, #2dd4bf30 50%, transparent 100%);
+    top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #639478 0%, #a8c5b0 40%, #c9a96e 100%);
+    border-radius: 12px 12px 0 0;
+}
+
+@keyframes cardRise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 /* Section headers */
 .ahp-sec {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     margin-bottom: 6px;
 }
 .ahp-sec-label {
-    font-size: 16px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
     font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: #f8fafc;
-    font-family: 'Space Grotesk', sans-serif;
+    color: #1e2d22;
+    letter-spacing: 0.2px;
 }
 .ahp-sec-line {
     flex: 1;
     height: 1px;
-    background: linear-gradient(90deg, #1e293b 0%, transparent 100%);
+    background: linear-gradient(90deg, #c9bfb0 0%, transparent 100%);
 }
 .ahp-sec-badge {
     font-size: 10px;
     font-weight: 600;
-    font-family: 'JetBrains Mono', monospace;
-    color: #2dd4bf;
-    background: #0f2e2a;
-    border: 1px solid #14b8a6;
+    font-family: 'DM Mono', monospace;
+    color: #639478;
+    background: #edf4ef;
+    border: 1px solid #b5d0bc;
     border-radius: 20px;
-    padding: 3px 12px;
+    padding: 3px 13px;
     letter-spacing: 1px;
     text-transform: uppercase;
 }
 .ahp-sec-sub {
     font-size: 13px;
-    color: #94a3b8;
-    margin-bottom: 18px;
+    color: #8a7f72;
+    margin-bottom: 20px;
     font-weight: 400;
-    letter-spacing: 0.3px;
-    font-family: 'Space Grotesk', sans-serif;
-}
-
-/* Notice */
-.ahp-notice {
-    background: #061510;
-    padding: 14px 18px;
-    border-left: 2px solid #2dd4bf;
-    border-radius: 0 10px 10px 0;
-    font-size: 13px;
-    color: #64748b;
-    line-height: 1.7;
+    letter-spacing: 0.2px;
 }
 
 /* Diagonal / reciprocal cells */
 .ahp-diag {
     text-align: center;
     padding: 7px 4px;
-    background: #2dd4bf0e;
+    background: #edf4ef;
     border-radius: 7px;
-    color: #2dd4bf;
+    color: #639478;
     font-weight: 600;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'DM Mono', monospace;
     font-size: 13px;
-    border: 1px solid #2dd4bf1e;
+    border: 1px solid #b5d0bc;
 }
 .ahp-recip {
     text-align: center;
     padding: 7px 4px;
-    color: #243040;
-    font-family: 'JetBrains Mono', monospace;
+    color: #b5a99a;
+    font-family: 'DM Mono', monospace;
     font-size: 12px;
 }
 .ahp-row-label {
     padding: 8px 4px;
-    color: #4a6070;
+    color: #5a7060;
     font-size: 12px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'DM Mono', monospace;
     font-weight: 500;
     letter-spacing: 0.5px;
 }
 
 /* Metric boxes */
 .ahp-metric {
-    background: #090e16;
-    border-radius: 14px;
-    border: 1px solid #131f2e;
-    padding: 20px 14px;
+    background: linear-gradient(145deg, #fdfcf9 0%, #f7f3ec 100%);
+    border-radius: 12px;
+    border: 1px solid #e2d9cc;
+    padding: 22px 16px;
     text-align: center;
+    box-shadow: 0 2px 12px rgba(80, 60, 40, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.ahp-metric:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(80, 60, 40, 0.10);
 }
 .ahp-metric-label {
     font-size: 9px;
-    color: #2a3f55;
+    color: #a89880;
     letter-spacing: 3px;
     text-transform: uppercase;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'DM Mono', monospace;
     margin-bottom: 10px;
 }
 .ahp-metric-val {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 700;
-    color: #c8d8e8;
-    font-family: 'JetBrains Mono', monospace;
+    color: #2c3e30;
+    font-family: 'DM Mono', monospace;
     letter-spacing: -0.5px;
 }
-.ahp-metric-val.ok    { color: #2dd4bf; }
-.ahp-metric-val.fail { color: #f87171; }
+.ahp-metric-val.ok   { color: #3d7a5c; }
+.ahp-metric-val.fail { color: #c0392b; }
 .ahp-metric-sub {
     font-size: 10px;
-    color: #2a3f55;
-    margin-top: 6px;
-    font-family: 'JetBrains Mono', monospace;
+    color: #a89880;
+    margin-top: 7px;
+    font-family: 'DM Mono', monospace;
     letter-spacing: 0.5px;
 }
 
 /* Button */
 .stButton > button {
-    background: #0f4a45 !important;
-    color: #a7f3d0 !important;
-    border: 1px solid #2dd4bf30 !important;
-    border-radius: 12px !important;
-    font-family: 'JetBrains Mono', monospace !important;
+    background: linear-gradient(135deg, #3d6b50 0%, #639478 100%) !important;
+    color: #f0f9f3 !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-family: 'DM Mono', monospace !important;
     font-size: 12px !important;
     font-weight: 600 !important;
     letter-spacing: 3px !important;
     padding: 15px 0 !important;
     text-transform: uppercase !important;
-    transition: all 0.18s ease !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 4px 15px rgba(61, 107, 80, 0.25) !important;
 }
 .stButton > button:hover {
-    background: #134e48 !important;
-    border-color: #2dd4bf55 !important;
-    color: #ccfbf1 !important;
+    background: linear-gradient(135deg, #2c5040 0%, #4d7a60 100%) !important;
+    box-shadow: 0 6px 22px rgba(61, 107, 80, 0.35) !important;
+    transform: translateY(-1px) !important;
 }
 
 /* Inputs */
 div[data-testid="stNumberInput"] input {
-    background: #090e16 !important;
-    border: 1px solid #131f2e !important;
+    background: #fdfcf9 !important;
+    border: 1px solid #ddd5c4 !important;
     border-radius: 8px !important;
-    color: #c8d8e8 !important;
-    font-family: 'JetBrains Mono', monospace !important;
+    color: #2c3e30 !important;
+    font-family: 'DM Mono', monospace !important;
     font-size: 13px !important;
     text-align: center !important;
 }
 div[data-testid="stNumberInput"] input:focus {
-    border-color: #2dd4bf50 !important;
-    box-shadow: 0 0 0 2px #2dd4bf0e !important;
+    border-color: #639478 !important;
+    box-shadow: 0 0 0 2px rgba(99, 148, 120, 0.15) !important;
 }
 
 /* Dataframes */
 div[data-testid="stDataFrame"] {
     border-radius: 10px !important;
     overflow: hidden;
-    border: 1px solid #131f2e !important;
+    border: 1px solid #e2d9cc !important;
 }
 
 .stCaption {
-    color: #1e2d3d !important;
+    color: #a89880 !important;
     font-size: 11px !important;
-    font-family: 'JetBrains Mono', monospace !important;
+    font-family: 'DM Mono', monospace !important;
 }
 
-/* Credits */
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
+/* Sidebar inputs */
+.stTextArea textarea {
+    background: #fdfcf9 !important;
+    border: 1px solid #ddd5c4 !important;
+    border-radius: 8px !important;
+    color: #2c3e30 !important;
+    font-family: 'DM Mono', monospace !important;
+    font-size: 12px !important;
 }
-@keyframes pdot {
-    0%, 100% { opacity: 0.15; transform: scale(0.8); }
-    50%        { opacity: 1;   transform: scale(1.3); }
+
+/* Sidebar info box */
+.ahp-sidebar-info {
+    background: #edf4ef;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin: 8px 0 14px 0;
+    border: 1px solid #b5d0bc;
 }
-@keyframes hexspin {
-    to { transform: rotate(360deg); }
+
+/* Notice */
+.ahp-notice {
+    background: #f5f1ea;
+    padding: 14px 18px;
+    border-left: 3px solid #639478;
+    border-radius: 0 10px 10px 0;
+    font-size: 13px;
+    color: #6b7c6e;
+    line-height: 1.7;
 }
-@keyframes lpulse {
-    0%, 100% { opacity: 0.12; }
-    50%        { opacity: 0.4;  }
+
+/* Watermark paper texture overlay */
+.stApp::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -223,145 +263,241 @@ div[data-testid="stDataFrame"] {
 # ─────────────────────────── HEADER ───────────────────────────
 st.markdown("""
 <style>
-.premium-header-wrapper {
+.ph-wrapper {
     position: relative;
     margin-top: -20px;
-    margin-bottom: 25px;
-    padding: 40px 30px;
-    background: linear-gradient(180deg, rgba(12, 20, 32, 0.8) 0%, rgba(6, 10, 14, 0) 100%);
-    border-bottom: 1px solid rgba(45, 212, 191, 0.1);
-    border-radius: 0 0 24px 24px;
+    margin-bottom: 30px;
+    padding: 48px 40px 40px 40px;
+    background: linear-gradient(180deg, rgba(237, 244, 239, 0.6) 0%, rgba(250, 248, 244, 0) 100%);
+    border-bottom: 1px solid #ddd5c4;
+    border-radius: 0 0 20px 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    animation: fadeSlideDown 0.8s ease-out forwards;
+    animation: headerDrop 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-.header-glow {
+
+@keyframes headerDrop {
+    0%  { opacity: 0; transform: translateY(-30px); }
+    100%{ opacity: 1; transform: translateY(0); }
+}
+
+/* Decorative grid lines */
+.ph-wrapper::before {
+    content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 600px;
-    height: 400px;
-    background: radial-gradient(ellipse at center, rgba(45, 212, 191, 0.08) 0%, transparent 60%);
-    transform: translate(-50%, -50%);
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(99,148,120,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,148,120,0.07) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
     pointer-events: none;
-    animation: pulseGlow 6s ease-in-out infinite alternate;
 }
-.header-content {
+
+.ph-inner {
     display: flex;
     align-items: center;
-    gap: 35px;
+    gap: 40px;
     position: relative;
     z-index: 2;
+    max-width: 900px;
 }
-.header-icon-box {
-    width: 110px;
-    height: 110px;
-    background: rgba(12, 20, 32, 0.5);
-    border: 1px solid rgba(45, 212, 191, 0.2);
-    border-radius: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(45, 212, 191, 0.05);
-    backdrop-filter: blur(10px);
-    animation: floatIcon 4s ease-in-out infinite;
+
+/* Logo */
+.ph-logo-wrap {
+    position: relative;
+    flex-shrink: 0;
 }
-.header-text-box {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+.ph-logo-ring {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #edf4ef 0%, #fdfcf9 100%);
+    border: 2px solid #b5d0bc;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 6px 30px rgba(99,148,120,0.18), inset 0 1px 0 rgba(255,255,255,0.8);
+    animation: floatRing 5s ease-in-out infinite;
 }
+.ph-logo-ring-outer {
+    position: absolute; inset: -8px;
+    border-radius: 50%;
+    border: 1px dashed rgba(99,148,120,0.35);
+    animation: spinSlow 25s linear infinite;
+}
+.ph-logo-ring-outer-2 {
+    position: absolute; inset: -18px;
+    border-radius: 50%;
+    border: 1px solid rgba(201, 169, 110, 0.2);
+    animation: spinSlow 40s linear infinite reverse;
+}
+
+@keyframes floatRing {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-8px); }
+}
+@keyframes spinSlow {
+    to { transform: rotate(360deg); }
+}
+
+/* Text */
+.ph-text { display: flex; flex-direction: column; }
+
 .ph-badge {
-    align-self: flex-start;
-    font-family: 'JetBrains Mono', monospace;
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
     font-size: 10px;
-    font-weight: 700;
-    color: #2dd4bf;
-    background: rgba(45, 212, 191, 0.1);
-    border: 1px solid rgba(45, 212, 191, 0.25);
-    padding: 4px 12px;
+    font-weight: 500;
+    color: #639478;
+    background: #edf4ef;
+    border: 1px solid #b5d0bc;
+    padding: 4px 14px;
     border-radius: 20px;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: 12px;
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+    width: fit-content;
+    animation: badgePop 0.6s 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
+@keyframes badgePop {
+    from { opacity: 0; transform: scale(0.8); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
 .ph-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 42px;
-    font-weight: 800;
-    margin: 0;
-    line-height: 1.1;
-    background: linear-gradient(90deg, #ffffff, #2dd4bf, #80cbc4, #ffffff);
-    background-size: 200% auto;
-    color: transparent;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1;
+    margin: 0 0 10px 0;
+    color: #1e2d22;
+    letter-spacing: -1px;
+    position: relative;
+}
+.ph-title em {
+    font-style: italic;
+    color: #639478;
+    background: linear-gradient(135deg, #639478, #c9a96e);
     -webkit-background-clip: text;
     background-clip: text;
-    animation: gradientTextShine 4s linear infinite;
-    letter-spacing: -1px;
+    -webkit-text-fill-color: transparent;
 }
-.ph-subtitle {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    color: #6a8a9a;
-    letter-spacing: 4px;
+
+.ph-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #a89880;
     text-transform: uppercase;
-    margin: 8px 0 0 0;
-    font-weight: 500;
+    letter-spacing: 4px;
+    margin: 0;
+    animation: fadeUp 0.7s 0.5s ease-out both;
 }
-@keyframes fadeSlideDown { 0% { opacity: 0; transform: translateY(-30px); } 100% { opacity: 1; transform: translateY(0); } }
-@keyframes floatIcon { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-8px) rotate(2deg); } }
-@keyframes pulseGlow { 0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.9); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } }
-@keyframes gradientTextShine { to { background-position: 200% center; } }
-.svg-node { transform-origin: center; animation: pulseNode 2s infinite alternate; }
-.svg-line { stroke-dasharray: 60; stroke-dashoffset: 60; animation: drawLine 3s ease-in-out infinite alternate; }
-@keyframes pulseNode { 0% { filter: drop-shadow(0 0 2px #2dd4bf); transform: scale(1); } 100% { filter: drop-shadow(0 0 8px #2dd4bf); transform: scale(1.15); } }
-@keyframes drawLine { 0% { stroke-dashoffset: 60; } 100% { stroke-dashoffset: 0; } }
-@media (max-width: 768px) { .header-content { flex-direction: column; text-align: center; gap: 20px; } .ph-badge { align-self: center; } .ph-title { font-size: 32px; } }
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Decorative divider dots */
+.ph-dots {
+    display: flex; gap: 6px; align-items: center; margin-top: 14px;
+}
+.ph-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #639478;
+    animation: dotPulse 2s ease-in-out infinite;
+}
+.ph-dot:nth-child(2) { background: #c9a96e; animation-delay: 0.3s; }
+.ph-dot:nth-child(3) { background: #a8c5b0; animation-delay: 0.6s; }
+.ph-dot:nth-child(4) { width: 20px; height: 1px; border-radius: 2px; background: #ddd5c4; animation: none; }
+.ph-dot:nth-child(5) { width: 8px; height: 1px; border-radius: 2px; background: #e8e0d0; animation: none; }
+@keyframes dotPulse {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    50%       { transform: scale(1.4); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+    .ph-inner { flex-direction: column; text-align: center; gap: 24px; }
+    .ph-badge  { align-self: center; }
+    .ph-title  { font-size: 36px; }
+    .ph-dots   { justify-content: center; }
+}
 </style>
 
-<div class="premium-header-wrapper">
-<div class="header-glow"></div>
-<div class="header-content">
-<div class="header-icon-box">
-<svg width="65" height="65" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<linearGradient id="lineGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-<stop offset="0%" stop-color="#2dd4bf" stop-opacity="0.8"/>
-<stop offset="100%" stop-color="#0284c7" stop-opacity="0.2"/>
-</linearGradient>
-</defs>
-<path d="M 50 25 L 20 70" stroke="url(#lineGrad)" stroke-width="3" stroke-linecap="round" fill="none" class="svg-line" style="animation-delay: 0s;"/>
-<path d="M 50 25 L 50 70" stroke="url(#lineGrad)" stroke-width="3" stroke-linecap="round" fill="none" class="svg-line" style="animation-delay: 0.2s;"/>
-<path d="M 50 25 L 80 70" stroke="url(#lineGrad)" stroke-width="3" stroke-linecap="round" fill="none" class="svg-line" style="animation-delay: 0.4s;"/>
-<circle cx="50" cy="22" r="9" fill="#a7f3d0" class="svg-node" style="animation-delay: 0s;"/>
-<circle cx="50" cy="22" r="4" fill="#060a0e" />
-<circle cx="20" cy="73" r="7" fill="#2dd4bf" class="svg-node" style="animation-delay: 0.5s;"/>
-<circle cx="20" cy="73" r="3" fill="#060a0e" />
-<circle cx="50" cy="73" r="7" fill="#2dd4bf" class="svg-node" style="animation-delay: 0.7s;"/>
-<circle cx="50" cy="73" r="3" fill="#060a0e" />
-<circle cx="80" cy="73" r="7" fill="#2dd4bf" class="svg-node" style="animation-delay: 0.9s;"/>
-<circle cx="80" cy="73" r="3" fill="#060a0e" />
-</svg>
-</div>
-<div class="header-text-box">
-<div class="ph-badge">Decision Support System</div>
-<h1 class="ph-title">AHP CALCULATOR</h1>
-<p class="ph-subtitle">Analytic Hierarchy Process</p>
-</div>
-</div>
+<div class="ph-wrapper">
+  <div class="ph-inner">
+
+    <div class="ph-logo-wrap">
+      <div class="ph-logo-ring-outer-2"></div>
+      <div class="ph-logo-ring-outer"></div>
+      <div class="ph-logo-ring">
+        <svg width="52" height="52" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="gTop" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#3d6b50"/>
+              <stop offset="100%" stop-color="#639478"/>
+            </linearGradient>
+            <linearGradient id="gBot" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#639478"/>
+              <stop offset="100%" stop-color="#c9a96e"/>
+            </linearGradient>
+          </defs>
+          <!-- Hierarchy lines -->
+          <line x1="50" y1="30" x2="22" y2="70" stroke="url(#gBot)" stroke-width="2.5" stroke-linecap="round" opacity="0.7">
+            <animate attributeName="opacity" values="0.5;1;0.5" dur="2.5s" repeatCount="indefinite" begin="0s"/>
+          </line>
+          <line x1="50" y1="30" x2="50" y2="70" stroke="url(#gBot)" stroke-width="2.5" stroke-linecap="round" opacity="0.7">
+            <animate attributeName="opacity" values="0.5;1;0.5" dur="2.5s" repeatCount="indefinite" begin="0.4s"/>
+          </line>
+          <line x1="50" y1="30" x2="78" y2="70" stroke="url(#gBot)" stroke-width="2.5" stroke-linecap="round" opacity="0.7">
+            <animate attributeName="opacity" values="0.5;1;0.5" dur="2.5s" repeatCount="indefinite" begin="0.8s"/>
+          </line>
+          <!-- Top node -->
+          <circle cx="50" cy="26" r="10" fill="url(#gTop)" opacity="0.95">
+            <animate attributeName="r" values="9;11;9" dur="3s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="50" cy="26" r="4" fill="white" opacity="0.9"/>
+          <!-- Bottom nodes -->
+          <circle cx="22" cy="74" r="8" fill="url(#gBot)" opacity="0.85">
+            <animate attributeName="r" values="7;9;7" dur="3s" repeatCount="indefinite" begin="0.5s"/>
+          </circle>
+          <circle cx="22" cy="74" r="3" fill="white" opacity="0.8"/>
+          <circle cx="50" cy="74" r="8" fill="url(#gBot)" opacity="0.85">
+            <animate attributeName="r" values="7;9;7" dur="3s" repeatCount="indefinite" begin="1s"/>
+          </circle>
+          <circle cx="50" cy="74" r="3" fill="white" opacity="0.8"/>
+          <circle cx="78" cy="74" r="8" fill="url(#gBot)" opacity="0.85">
+            <animate attributeName="r" values="7;9;7" dur="3s" repeatCount="indefinite" begin="1.5s"/>
+          </circle>
+          <circle cx="78" cy="74" r="3" fill="white" opacity="0.8"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="ph-text">
+      <div class="ph-badge">Decision Support System</div>
+      <h1 class="ph-title">AHP <em>Calculator</em></h1>
+      <p class="ph-sub">Analytic Hierarchy Process &nbsp;·&nbsp; Multi-Criteria Analysis</p>
+      <div class="ph-dots">
+        <div class="ph-dot"></div>
+        <div class="ph-dot"></div>
+        <div class="ph-dot"></div>
+        <div class="ph-dot"></div>
+        <div class="ph-dot"></div>
+      </div>
+    </div>
+
+  </div>
 </div>
 """, unsafe_allow_html=True)
 
 # ─────────────────────────── SIDEBAR ───────────────────────────
 st.sidebar.markdown("""
 <div style="padding:20px 4px 4px 4px;">
-  <div style="font-size:17px;font-weight:700;color:#c8d8e8;letter-spacing:-0.3px;
-  font-family:'Space Grotesk',sans-serif;margin-bottom:3px;">Settings</div>
-  <div style="font-size:11px;color:#2a3f55;margin-bottom:14px;font-family:'JetBrains Mono',monospace;">
-  Configure your AHP model</div>
-  <div style="height:1px;background:#131f2e;margin-bottom:14px;"></div>
+  <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;
+  color:#1e2d22;margin-bottom:3px;">Configuration</div>
+  <div style="font-size:11px;color:#a89880;margin-bottom:14px;font-family:'DM Mono',monospace;">
+  AHP Model Setup</div>
+  <div style="height:1px;background:linear-gradient(90deg,#b5d0bc,transparent);margin-bottom:14px;"></div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -374,9 +510,9 @@ criteria = [c.strip() for c in criteria_input.split(",") if c.strip()]
 n = len(criteria)
 
 st.sidebar.markdown(f"""
-<div style="background:#061510;border-radius:10px;padding:9px 14px;margin:8px 0 14px 0;
-border:1px solid #2dd4bf18;">
-<span style="font-size:11px;color:#2dd4bf;font-family:'JetBrains Mono',monospace;
+<div style="background:#edf4ef;border-radius:10px;padding:9px 14px;margin:8px 0 14px 0;
+border:1px solid #b5d0bc;">
+<span style="font-size:11px;color:#3d7a5c;font-family:'DM Mono',monospace;
 font-weight:600;letter-spacing:0.5px;">n = {n} &nbsp;criteria detected</span>
 </div>
 """, unsafe_allow_html=True)
@@ -397,8 +533,8 @@ for label, formula in [
     st.sidebar.latex(formula)
 
 st.sidebar.markdown("""
-<div style="background:#061510;border-left:2px solid #2dd4bf;border-radius:0 8px 8px 0;
-padding:9px 14px;font-size:11px;color:#2dd4bf;font-family:'JetBrains Mono',monospace;
+<div style="background:#edf4ef;border-left:2px solid #639478;border-radius:0 8px 8px 0;
+padding:9px 14px;font-size:11px;color:#3d7a5c;font-family:'DM Mono',monospace;
 margin-top:6px;letter-spacing:0.5px;">&#10003; Acceptable when CR &lt; 0.10</div>
 """, unsafe_allow_html=True)
 
@@ -414,9 +550,9 @@ st.sidebar.markdown("### 📊 Random Index (RI)")
 ri_df = pd.DataFrame(list(RI_dict.items()), columns=["n", "RI"])
 st.sidebar.dataframe(ri_df, use_container_width=True, hide_index=True)
 st.sidebar.markdown(f"""
-<div style="background:#090e16;border-radius:8px;padding:8px 12px;margin-top:6px;
-font-size:11px;color:#2a3f55;font-family:'JetBrains Mono',monospace;
-border:1px solid #131f2e;letter-spacing:0.5px;">
+<div style="background:#fdfcf9;border-radius:8px;padding:8px 12px;margin-top:6px;
+font-size:11px;color:#a89880;font-family:'DM Mono',monospace;
+border:1px solid #e2d9cc;letter-spacing:0.5px;">
 n = {n} &nbsp;&#8594;&nbsp; RI = {RI_dict.get(n, 1.59)}</div>
 """, unsafe_allow_html=True)
 
@@ -434,8 +570,8 @@ st.sidebar.dataframe(saaty_df, use_container_width=True, hide_index=True)
 st.markdown("""
 <div class="ahp-card">
   <div class="ahp-sec">
-    <span class="ahp-sec-label">Pairwise Comparison Input</span>
-    <span class="ahp-sec-badge">Step 1</span>
+    <span class="ahp-sec-label">Pairwise Comparison Matrix</span>
+    <span class="ahp-sec-badge">Step 01</span>
     <span class="ahp-sec-line"></span>
   </div>
   <div class="ahp-sec-sub">Upper triangle only &nbsp;·&nbsp; Diagonal fixed at 1 &nbsp;·&nbsp; Reciprocals auto-computed &nbsp;·&nbsp; Saaty scale 1–9</div>
@@ -443,15 +579,13 @@ st.markdown("""
 
 matrix = np.ones((n, n))
 
-# --- ADDED: Column Header Row ---
 header_cols = st.columns([1.0] + [1] * n)
-header_cols[0].write("") # Empty top-left corner
+header_cols[0].write("")
 for j in range(n):
     header_cols[j+1].markdown(
-        f"<div class='ahp-row-label' style='text-align:center; color:#2dd4bf; border-bottom:1px solid #131f2e; padding-bottom:8px; margin-bottom:8px;'>{criteria[j]}</div>",
+        f"<div class='ahp-row-label' style='text-align:center;color:#639478;border-bottom:1px solid #ddd5c4;padding-bottom:8px;margin-bottom:8px;'>{criteria[j]}</div>",
         unsafe_allow_html=True
     )
-# --------------------------------
 
 for i in range(n):
     cols = st.columns([1.0] + [1] * n)
@@ -594,8 +728,8 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
         "CW %":             [float(CW_pct[i])       for i in sorted_idx],
     })
     st.dataframe(
-        df5, 
-        use_container_width=True, 
+        df5,
+        use_container_width=True,
         hide_index=True,
         column_config={
             "Avg / Weight (W)": st.column_config.NumberColumn(format="%.4f"),
@@ -609,77 +743,77 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
             )
         }
     )
-    
+
     st.markdown("""
-    <div style="background:#061510; border:1px solid #131f2e; border-left:3px solid #2dd4bf; padding:14px 18px; border-radius:8px; margin-top:16px;">
-        <div style="color:#2dd4bf; font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">🗺️ GIS Application Ready</div>
-        <div style="color:#8a9fae; font-size:12px; line-height:1.6;">Input the <b style="color:#c8d8e8;">Criteria CW</b> values into your spatial analysis tool (e.g., ArcGIS Weighted Overlay, QGIS Raster Calculator) to generate your suitability map. Ensure all input raster layers are reclassified to a common scale before multiplying by these weights.</div>
+    <div style="background:#edf4ef;border:1px solid #b5d0bc;border-left:3px solid #639478;
+    padding:14px 18px;border-radius:8px;margin-top:16px;">
+        <div style="color:#3d6b50;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;
+        text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">🗺️ GIS Application Ready</div>
+        <div style="color:#4a6b54;font-size:12px;line-height:1.6;">Input the <b>Criteria CW</b> values
+        into your spatial analysis tool (e.g., ArcGIS Weighted Overlay, QGIS Raster Calculator) to
+        generate your suitability map. Ensure all input raster layers are reclassified to a common
+        scale before multiplying by these weights.</div>
     </div>
     """, unsafe_allow_html=True)
-    
+
     card_close()
 
-    # CHARTS (Consolidated single block to prevent duplication)
+    # CHARTS
     card_open("Weight Visualization", "Charts", "Priority weight distribution across criteria")
 
-    BG   = "#060a0e"
-    SURF = "#0c1420"
-    TEAL = "#2dd4bf"
-    MUT  = "#4a6070"  # Slightly brightened muted text
-    TXT  = "#a7f3d0"  # Brighter text for chart titles
+    BG      = "#faf8f4"
+    SURF    = "#fdfcf9"
+    GREEN   = "#639478"
+    GOLD    = "#c9a96e"
+    MUT     = "#8a7f72"
+    TXT     = "#1e2d22"
 
-    palette = ["#2dd4bf","#0d9488","#0f766e","#134e4a","#115e59",
-               "#1d9488","#14b8a6","#5eead4","#99f6e4","#ccfbf1"]
+    palette = ["#639478","#3d6b50","#4d8f65","#8ab89a","#a8c5b0",
+               "#c9a96e","#b08040","#d4b88a","#e8d4b0","#f0e6d0"]
 
     sorted_criteria = [criteria[i] for i in sorted_idx]
     sorted_cw       = [CW[i]       for i in sorted_idx]
 
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5.2), facecolor=BG)
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5.4), facecolor=BG)
     fig.subplots_adjust(wspace=0.32)
 
-    # Bar
+    # Bar chart
     ax1 = axes[0]
     ax1.set_facecolor(SURF)
-    bc = [palette[i % len(palette)] for i in range(len(sorted_cw))]
+    for sp in ax1.spines.values():
+        sp.set_color("#e2d9cc"); sp.set_linewidth(0.8)
+    bc   = [palette[i % len(palette)] for i in range(len(sorted_cw))]
     bars = ax1.bar(sorted_criteria, sorted_cw, color=bc,
-                   edgecolor=BG, linewidth=1.4, width=0.56, zorder=3)
-    ax1.set_title("Criteria Weight (CW)", color=TXT, fontsize=11, fontweight="bold",
-                  pad=15, fontfamily="monospace", loc="left")
+                   edgecolor=SURF, linewidth=1.2, width=0.54, zorder=3)
+    ax1.set_title("Criteria Weight (CW)", color=TXT, fontsize=12, fontweight="bold",
+                  pad=14, fontfamily="monospace", loc="left")
     ax1.set_xlabel("Criteria", color=MUT, fontsize=10, labelpad=9)
     ax1.set_ylabel("CW",       color=MUT, fontsize=10, labelpad=9)
     ax1.tick_params(colors=MUT, labelsize=9)
-    for sp in ax1.spines.values():
-        sp.set_color("#131f2e"); sp.set_linewidth(0.5)
-    ax1.grid(axis="y", color="#131f2e", linewidth=0.5, zorder=0)
+    ax1.grid(axis="y", color="#e8e0d4", linewidth=0.6, zorder=0)
     ax1.set_axisbelow(True)
-    
-    # Enhanced Bar chart text (bold and bright)
     for bar, w in zip(bars, sorted_cw):
         ax1.text(bar.get_x() + bar.get_width()/2,
                  bar.get_height() + max(sorted_cw)*0.018,
                  f"{w:.4f}", ha="center", va="bottom",
-                 color="#ffffff", fontsize=9, fontweight="bold", fontfamily="monospace")
+                 color=TXT, fontsize=9, fontweight="bold", fontfamily="monospace")
 
-    # Pie
+    # Pie chart
     ax2 = axes[1]
     ax2.set_facecolor(BG)
     wedges, texts, auts = ax2.pie(
         sorted_cw, labels=sorted_criteria, autopct="%1.1f%%",
         colors=palette[:len(sorted_cw)], startangle=140,
-        pctdistance=0.74, # Brought percentages slightly closer to center
-        # Enhanced Pie chart external labels
-        textprops={"color": "#e2e8f0", "fontsize": 10, "fontweight": "500", "fontfamily": "monospace"},
+        pctdistance=0.74,
+        textprops={"color": "#3a4a40", "fontsize": 10, "fontfamily": "monospace"},
         wedgeprops={"edgecolor": BG, "linewidth": 2.5}
     )
-    
-    # Enhanced Pie chart internal percentages (bold white)
     for at in auts:
-        at.set_color("#ffffff")
-        at.set_fontsize(9.5)
+        at.set_color("#1e2d22")
+        at.set_fontsize(9)
         at.set_fontweight("bold")
-        
-    ax2.set_title("CW Distribution", color=TXT, fontsize=11, fontweight="bold",
-                  pad=15, fontfamily="monospace", loc="left")
+    ax2.set_title("CW Distribution", color=TXT, fontsize=12, fontweight="bold",
+                  pad=14, fontfamily="monospace", loc="left")
 
     plt.tight_layout()
     st.pyplot(fig, use_container_width=True)
@@ -706,131 +840,239 @@ if st.button("▶   RUN AHP ANALYSIS", use_container_width=True):
 """)
     card_close()
 
-# ─────────────────────────── ANIMATED CREDITS ───────────────────────────
+# ─────────────────────────── CREDITS ───────────────────────────
 st.markdown("""
 <style>
-.premium-footer {
-    margin-top: 50px;
-    padding: 30px 20px;
-    background: linear-gradient(145deg, rgba(12, 20, 32, 0.8) 0%, rgba(6, 10, 14, 0.95) 100%);
-    border: 1px solid rgba(45, 212, 191, 0.15);
-    border-radius: 16px;
+
+@keyframes shimmer {
+    0%   { background-position: -400px 0; }
+    100% { background-position: 400px 0; }
+}
+@keyframes borderGlow {
+    0%, 100% { border-color: rgba(99,148,120,0.25); }
+    50%        { border-color: rgba(99,148,120,0.55); }
+}
+@keyframes floatCredit {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-4px); }
+}
+@keyframes orbitDot {
+    from { transform: rotate(0deg) translateX(38px) rotate(0deg); }
+    to   { transform: rotate(360deg) translateX(38px) rotate(-360deg); }
+}
+@keyframes fadeInFooter {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.pf-outer {
+    margin-top: 60px;
+    padding: 48px 36px;
+    background: linear-gradient(145deg, #fdfcf9 0%, #f4f0e8 50%, #edf4ef 100%);
+    border: 1px solid rgba(99,148,120,0.25);
+    border-radius: 20px;
     text-align: center;
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
-    animation: floatUp 1s ease-out forwards;
+    box-shadow:
+        0 4px 30px rgba(80, 60, 40, 0.08),
+        0 1px 4px rgba(80, 60, 40, 0.04),
+        inset 0 1px 0 rgba(255,255,255,0.9);
+    animation: fadeInFooter 0.8s ease-out both, borderGlow 4s ease-in-out infinite;
 }
 
-.premium-footer::before {
+/* Decorative corner motifs */
+.pf-outer::before {
     content: '';
     position: absolute;
-    top: -50%; left: -50%; width: 200%; height: 200%;
-    background: radial-gradient(circle, rgba(45,212,191,0.05) 0%, transparent 60%);
-    animation: slowSpin 15s linear infinite;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #639478, #c9a96e, #8ab89a, #639478);
+    background-size: 200% auto;
+    animation: shimmer 3s linear infinite;
+}
+.pf-outer::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(99,148,120,0.4), transparent);
+}
+
+/* Background watermark graphic */
+.pf-bg-icon {
+    position: absolute;
+    right: -30px; bottom: -30px;
+    width: 180px; height: 180px;
+    opacity: 0.04;
     pointer-events: none;
 }
 
-.pf-label {
-    font-size: 10px;
-    color: #4a6070;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 6px;
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 600;
+/* Avatar ring */
+.pf-avatar-wrap {
+    display: inline-block;
+    position: relative;
+    margin-bottom: 20px;
+    animation: floatCredit 5s ease-in-out infinite;
+}
+.pf-avatar {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #edf4ef 0%, #fdfcf9 100%);
+    border: 2px solid rgba(99,148,120,0.4);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto;
+    box-shadow: 0 4px 20px rgba(99,148,120,0.15), inset 0 1px 0 rgba(255,255,255,0.8);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    color: #639478;
+    font-weight: 700;
+    font-style: italic;
+}
+/* Orbiting dot */
+.pf-orbit {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 8px; height: 8px;
+    margin: -4px 0 0 -4px;
+    border-radius: 50%;
+    background: #c9a96e;
+    animation: orbitDot 4s linear infinite;
+    box-shadow: 0 0 6px rgba(201,169,110,0.6);
 }
 
+.pf-by {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #a89880;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+}
 .pf-name {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 24px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
     font-weight: 700;
-    background: linear-gradient(90deg, #2dd4bf, #80cbc4, #2dd4bf);
+    color: #1e2d22;
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+    background: linear-gradient(135deg, #1e2d22 0%, #3d6b50 50%, #c9a96e 100%);
     background-size: 200% auto;
-    color: transparent;
     -webkit-background-clip: text;
     background-clip: text;
-    animation: shine 3s linear infinite;
-    margin-bottom: 6px;
-    letter-spacing: 0.5px;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 4s linear infinite;
 }
-
-.pf-info {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 14px;
-    color: #6a8a9a;
-    margin-bottom: 22px;
-    letter-spacing: 0.2px;
+.pf-dept {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: #6b7c6e;
+    margin-bottom: 4px;
 }
-
-.pf-info span {
-    color: #2dd4bf;
-    opacity: 0.7;
+.pf-univ {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #a89880;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 28px;
+}
+.pf-divider {
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px; margin-bottom: 24px;
+}
+.pf-divider-line {
+    height: 1px; width: 60px;
+    background: linear-gradient(90deg, transparent, #ddd5c4, transparent);
+}
+.pf-divider-diamond {
+    width: 6px; height: 6px;
+    background: #639478; border-radius: 1px;
+    transform: rotate(45deg);
 }
 
 .pf-links {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    position: relative;
-    z-index: 2;
+    display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;
 }
-
 .pf-link {
     text-decoration: none !important;
-    color: #a7f3d0 !important;
-    background: rgba(45, 212, 191, 0.05);
-    border: 1px solid rgba(45, 212, 191, 0.2);
-    padding: 10px 20px;
+    color: #3d6b50 !important;
+    background: rgba(99,148,120,0.08);
+    border: 1px solid rgba(99,148,120,0.3);
+    padding: 10px 22px;
     border-radius: 30px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+    letter-spacing: 1.5px;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 8px rgba(99,148,120,0.08);
 }
-
 .pf-link:hover {
-    background: rgba(45, 212, 191, 0.15);
-    border-color: rgba(45, 212, 191, 0.5);
+    background: rgba(99,148,120,0.15);
+    border-color: rgba(99,148,120,0.55);
     transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(45, 212, 191, 0.15);
-    color: #ffffff !important;
+    box-shadow: 0 6px 18px rgba(99,148,120,0.18);
+    color: #2c5040 !important;
 }
-
-@keyframes shine {
-    to { background-position: 200% center; }
+.pf-link.gold {
+    color: #7a5a20 !important;
+    background: rgba(201,169,110,0.10);
+    border-color: rgba(201,169,110,0.35);
 }
-@keyframes floatUp {
-    0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
-@keyframes slowSpin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.pf-link.gold:hover {
+    background: rgba(201,169,110,0.18);
+    border-color: rgba(201,169,110,0.6);
+    color: #5c4010 !important;
+    box-shadow: 0 6px 18px rgba(201,169,110,0.2);
 }
 </style>
 
-<div class="premium-footer">
-    <div class="pf-label">Designed & Developed By</div>
-    <div class="pf-name">Anindo Paul Sourav</div>
-    <div class="pf-info">
-        Geology and Mining <span>•</span> University of Barishal
-    </div>
-    <div class="pf-links">
-        <a href="https://www.linkedin.com/in/anindo046/" target="_blank" class="pf-link">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-            LinkedIn
-        </a>
-        <a href="https://anindo46.github.io/portfolio/" target="_blank" class="pf-link">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-            Portfolio
-        </a>
-    </div>
+<div class="pf-outer">
+
+  <!-- Background watermark SVG -->
+  <svg class="pf-bg-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none">
+    <circle cx="50" cy="26" r="12" fill="#1e2d22"/>
+    <line x1="50" y1="38" x2="22" y2="78" stroke="#1e2d22" stroke-width="3"/>
+    <line x1="50" y1="38" x2="50" y2="78" stroke="#1e2d22" stroke-width="3"/>
+    <line x1="50" y1="38" x2="78" y2="78" stroke="#1e2d22" stroke-width="3"/>
+    <circle cx="22" cy="82" r="9" fill="#1e2d22"/>
+    <circle cx="50" cy="82" r="9" fill="#1e2d22"/>
+    <circle cx="78" cy="82" r="9" fill="#1e2d22"/>
+  </svg>
+
+  <div class="pf-avatar-wrap">
+    <div class="pf-avatar">A</div>
+    <div class="pf-orbit"></div>
+  </div>
+
+  <div class="pf-by">Designed &amp; Developed by</div>
+  <div class="pf-name">Anindo Paul Sourav</div>
+  <div class="pf-dept">Department of Geology and Mining</div>
+  <div class="pf-univ">University of Barishal</div>
+
+  <div class="pf-divider">
+    <div class="pf-divider-line"></div>
+    <div class="pf-divider-diamond"></div>
+    <div class="pf-divider-line"></div>
+  </div>
+
+  <div class="pf-links">
+    <a href="https://www.linkedin.com/in/anindo046/" target="_blank" class="pf-link">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+      </svg>
+      LinkedIn
+    </a>
+    <a href="https://anindo46.github.io/portfolio/" target="_blank" class="pf-link gold">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="2" y1="12" x2="22" y2="12"></line>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+      </svg>
+      Portfolio
+    </a>
+  </div>
+
 </div>
 """, unsafe_allow_html=True)
